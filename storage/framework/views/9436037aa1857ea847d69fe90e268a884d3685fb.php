@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Laravue</title>
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
+        <link href="<?php echo e(mix('css/app.css')); ?>" type="text/css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <meta name="csrf-token" value="<?php echo e(csrf_token()); ?>" />
+    </head>
+    <body>
+        <div id="app">
+          <example-component></example-component>
+        </div>
+        <script src="<?php echo e(mix('js/app.js')); ?>" type="text/javascript"></script>
+    </body>
+</html><?php /**PATH /home/ubuntu/environment/spa/resources/views/tasks.blade.php ENDPATH**/ ?>
