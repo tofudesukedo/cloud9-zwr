@@ -1,17 +1,26 @@
 <template>
-    <div class="container">
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-           <ul class="navbar-nav">
-               <li class="nav-item">
-                  a
-               </li>
-            </ul>
-       </nav>
-        <router-view></router-view>
+    <div class="row">
+        <div class="col-md-3" style="background: #f6f7f8; height: 1000px" >
+            <div style="margin: 40px;">
+                <router-link to="/" style="display: block;" class="mb-3">Home</router-link>
+                <router-link to="/app_index" style="display:block;" class="mb-3">アプリケーション一覧</router-link>
+                <p>today</p>
+                <p>news</p>
+                <p>create newb board</p>
+                <p>recently read</p>
+                <p>intergration</p>
+            </div>
+        </div>
+        <div class="col-md-9">
+                <router-view></router-view>
+        </div>
     </div>
 </template>
 
 <script>
-    export default{
+    export default {
+        mounted() {
+            console.log('Component mounted.')
+        }
     }
 </script>

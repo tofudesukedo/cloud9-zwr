@@ -1,1 +1,38 @@
-//
+.app-header {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    li {
+        list-style: none;
+    }
+}
+
+.app-titles {
+    p {
+        padding-bottom:16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+}
+
+.modal-footer{
+    .form-group{
+        margin-bottom: 0;
+    }
+}
+
+.index {
+    .app-content {
+        position: relative;
+    }
+    .app-detail {
+        position: absolute ;
+        top:0;
+        left:100%;
+        &.active {
+            right:0;
+            left: inherit !important;
+        }
+    }
+}
