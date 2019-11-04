@@ -1,4 +1,8 @@
-.app-header {
+.index {
+  text-align: center;
+}
+
+.index .app-header {
   padding: 20px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   display: -webkit-box;
@@ -9,31 +13,69 @@
   justify-content: space-around;
 }
 
-.app-header li {
+.index .app-header li {
   list-style: none;
-}
-
-.app-titles p {
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.modal-footer .form-group {
-  margin-bottom: 0;
 }
 
 .index .app-content {
   position: relative;
 }
 
-.index .app-detail {
+.index .app-content.active {
+  background: #333;
+  opacity: 0.1;
+}
+
+.index .app-details {
+  opacity: 0;
   position: absolute;
   top: 0;
   left: 100%;
+  background: #fff;
+  height: 700px;
+  width: 70%;
 }
 
-.index .app-detail.active {
+.index .app-details .tabs {
+  cursor: pointer;
+  padding: 0;
+  width: 92%;
+  height: 50px;
+  background: #F4F4F4;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-direction: row;
+  list-style: none;
+  -webkit-box-pack: justify;
+          justify-content: space-between;
+  text-align: center;
+  word-break: break-all;
+}
+
+.index .app-details .tabs li {
+  padding: 12px 0 0 0;
+  width: 33%;
+}
+
+.index .app-details .tabs li.active {
+  background: #fff;
+}
+
+.index .app-details .close {
+  background: #fff;
+  opacity: 1;
+  height: 50px;
+}
+
+.index .app-details.active {
+  opacity: 1;
   right: 0;
   left: inherit !important;
+}
+
+.modal-footer .form-group {
+  margin-bottom: 0;
 }
 

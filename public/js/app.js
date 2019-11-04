@@ -2006,11 +2006,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       apps: [],
-      app: {}
+      app: {},
+      isActive: '1'
     };
   },
   mounted: function mounted() {
@@ -2019,7 +2022,7 @@ __webpack_require__.r(__webpack_exports__);
     var uri = "/api" + this.$route.path;
     this.axios.get(uri).then(function (response) {
       _this.apps = response.data.apps;
-      console.log(_this.apps);
+      console.log(response.data);
     });
   },
   methods: {
@@ -2029,29 +2032,32 @@ __webpack_require__.r(__webpack_exports__);
       var uri = '/api/app_create';
       this.axios.post(uri, this.app).then(function (response) {
         _this2.apps.push(response.data.app);
-
-        console.log();
       });
     },
-    editApp: function editApp(id) {
+    editApp: function editApp(id, e) {
       var uri = "/api/app_edit/".concat(id);
-      this.axios.get(uri, this.app).then(function (response) {
-        console.log(response.data);
-      });
+      this.axios.get(uri, this.app).then(function (response) {});
+      e.stopPropagation();
     },
-    deleteApp: function deleteApp(id) {
+    deleteApp: function deleteApp(id, e) {
       var _this3 = this;
 
       var uri = "/api/app_delete/".concat(id);
       this.axios["delete"](uri).then(function (response) {
         _this3.apps.splice(_this3.apps.indexOf(id), 1);
       });
+      e.stopPropagation();
     },
-    detailShow: function detailShow() {
-      $('.app-detail').addClass("active");
+    detailShow: function detailShow(id) {
+      $('.app-detail' + id).addClass("active");
+      $('.app-content').addClass("active");
     },
-    closeDetail: function closeDetail() {
-      $('.app-detail').removeClass("active");
+    closeDetail: function closeDetail(id) {
+      $('.app-detail' + id).removeClass("active");
+      $('.app-content').removeClass("active");
+    },
+    change: function change(num) {
+      this.isActive = num;
     }
   }
 });
@@ -19800,7 +19806,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "index", staticStyle: { "text-align": "center" } },
+    { staticClass: "index" },
     [
       _c("div", { staticClass: "app-content" }, [
         _vm._m(0),
@@ -19820,16 +19826,33 @@ var render = function() {
                     key: app.id,
                     on: {
                       click: function($event) {
-                        return _vm.detailShow()
+                        return _vm.detailShow(app.id)
                       }
                     }
                   },
                   [
                     _c("td", [_vm._v(_vm._s(app.id))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(app.title))]),
+                    _c("td", [_vm._v(_vm._s(app.name))]),
                     _vm._v(" "),
-                    _vm._m(2, true),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          attrs: {
+                            "data-toggle": "modal",
+                            "data-target": "#editModal"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.editApp(app.id, $event)
+                            }
+                          }
+                        },
+                        [_vm._v("Edit")]
+                      )
+                    ]),
                     _vm._v(" "),
                     _c("td", [
                       _c(
@@ -19838,8 +19861,7 @@ var render = function() {
                           staticClass: "btn btn-danger",
                           on: {
                             click: function($event) {
-                              $event.preventDefault()
-                              return _vm.deleteApp(app.id)
+                              return _vm.deleteApp(app.id, $event)
                             }
                           }
                         },
@@ -19872,7 +19894,7 @@ var render = function() {
               { staticClass: "modal-dialog", attrs: { role: "document" } },
               [
                 _c("div", { staticClass: "modal-content" }, [
-                  _vm._m(3),
+                  _vm._m(2),
                   _vm._v(" "),
                   _c(
                     "form",
@@ -19889,20 +19911,20 @@ var render = function() {
                         _c("div", { staticClass: "row" }, [
                           _c("div", { staticClass: "col-md-12" }, [
                             _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("App Title:")]),
+                              _c("label", [_vm._v("App Name:")]),
                               _vm._v(" "),
                               _c("input", {
                                 directives: [
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.app.title,
-                                    expression: "app.title"
+                                    value: _vm.app.name,
+                                    expression: "app.name"
                                   }
                                 ],
                                 staticClass: "form-control",
                                 attrs: { type: "text" },
-                                domProps: { value: _vm.app.title },
+                                domProps: { value: _vm.app.name },
                                 on: {
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -19910,7 +19932,127 @@ var render = function() {
                                     }
                                     _vm.$set(
                                       _vm.app,
-                                      "title",
+                                      "name",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("service_id:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app.service_id,
+                                    expression: "app.service_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app.service_id },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app,
+                                      "service_id",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("app_state_cd:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app.app_state_cd,
+                                    expression: "app.app_state_cd"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app.app_state_cd },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app,
+                                      "app_state_cd",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("app_type_cd:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app.app_type_cd,
+                                    expression: "app.app_type_cd"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app.app_type_cd },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app,
+                                      "app_type_cd",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("enable_flg")]),
+                              _vm._v("x "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app.enable_flg,
+                                    expression: "app.enable_flg"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app.enable_flg },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app,
+                                      "enable_flg",
                                       $event.target.value
                                     )
                                   }
@@ -19921,7 +20063,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _vm._m(4)
+                      _vm._m(3)
                     ]
                   )
                 ])
@@ -19948,7 +20090,7 @@ var render = function() {
               { staticClass: "modal-dialog", attrs: { role: "document" } },
               [
                 _c("div", { staticClass: "modal-content" }, [
-                  _vm._m(5),
+                  _vm._m(4),
                   _vm._v(" "),
                   _c(
                     "form",
@@ -19965,20 +20107,20 @@ var render = function() {
                         _c("div", { staticClass: "row" }, [
                           _c("div", { staticClass: "col-md-12" }, [
                             _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("App Title:")]),
+                              _c("label", [_vm._v("App Name:")]),
                               _vm._v(" "),
                               _c("input", {
                                 directives: [
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.app.title,
-                                    expression: "app.title"
+                                    value: _vm.app.name,
+                                    expression: "app.name"
                                   }
                                 ],
                                 staticClass: "form-control",
                                 attrs: { type: "text" },
-                                domProps: { value: _vm.app.title },
+                                domProps: { value: _vm.app.name },
                                 on: {
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -19986,7 +20128,7 @@ var render = function() {
                                     }
                                     _vm.$set(
                                       _vm.app,
-                                      "title",
+                                      "name",
                                       $event.target.value
                                     )
                                   }
@@ -19997,7 +20139,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _vm._m(6)
+                      _vm._m(5)
                     ]
                   )
                 ])
@@ -20007,38 +20149,122 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "app-detail",
-          staticStyle: {
-            background: "#f6f7f8",
-            height: "700px",
-            width: "400px"
-          }
-        },
-        [
-          _c("div", { staticClass: "row" }, [
-            _c(
-              "button",
-              {
-                staticClass: "close",
-                staticStyle: { height: "30px" },
-                attrs: {
-                  type: "button",
-                  "data-dismiss": "modal",
-                  "aria-label": "Close"
+      _vm._l(_vm.apps, function(app) {
+        return _c("div", [
+          _c("div", { class: "app-detail" + app.id + " " + "app-details" }, [
+            _c("div", { staticClass: "row" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "modal",
+                    "aria-label": "Close"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.closeDetail(app.id)
+                    }
+                  }
                 },
-                on: { click: _vm.closeDetail }
-              },
-              [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-            ),
-            _vm._v(" "),
-            _vm._m(7)
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c("ul", { staticClass: "tabs" }, [
+                _c(
+                  "li",
+                  {
+                    class: { active: _vm.isActive === "1" },
+                    on: {
+                      click: function($event) {
+                        return _vm.change("1")
+                      }
+                    }
+                  },
+                  [_vm._v("タブ1")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "li",
+                  {
+                    class: { active: _vm.isActive === "2" },
+                    on: {
+                      click: function($event) {
+                        return _vm.change("2")
+                      }
+                    }
+                  },
+                  [_vm._v("タブ2")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "li",
+                  {
+                    class: { active: _vm.isActive === "3" },
+                    on: {
+                      click: function($event) {
+                        return _vm.change("3")
+                      }
+                    }
+                  },
+                  [_vm._v("タブ3")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("ul", { staticClass: "contents" }, [
+                _vm.isActive === "1"
+                  ? _c("div", [
+                      _c("h3", [_vm._v("アプリケーション基本情報")]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("サービス名: " + _vm._s(app.name))]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("タイプ: " + _vm._s(app.app_type_cd))]),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v("ステータス: " + _vm._s(app.app_state_cd))
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.isActive === "2"
+                  ? _c("div", [
+                      _c("h3", [_vm._v("インフラ情報")]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("サービス名: " + _vm._s(app.name))]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("タイプ: " + _vm._s(app.app_type_cd))]),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v("ステータス: " + _vm._s(app.app_state_cd))
+                      ])
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.isActive === "3"
+                  ? _c("div", [
+                      _c("h3", [_vm._v("システム基本情報")]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("サービス名: " + _vm._s(app.name))]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("タイプ: " + _vm._s(app.app_type_cd))]),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v("ステータス: " + _vm._s(app.app_state_cd))
+                      ])
+                    ])
+                  : _vm._e()
+              ])
+            ])
           ])
-        ]
-      )
-    ]
+        ])
+      })
+    ],
+    2
   )
 }
 var staticRenderFns = [
@@ -20092,25 +20318,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-success",
-          attrs: { "data-toggle": "modal", "data-target": "#editModal" }
-        },
-        [_vm._v("Edit")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-header" }, [
       _c(
         "h5",
-        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        { staticClass: "modal-name", attrs: { id: "exampleModalLabel" } },
         [_vm._v("アプリケーションの追加")]
       ),
       _vm._v(" "),
@@ -20159,7 +20370,7 @@ var staticRenderFns = [
     return _c("div", { staticClass: "modal-header" }, [
       _c(
         "h5",
-        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        { staticClass: "modal-name", attrs: { id: "exampleModalLabel" } },
         [_vm._v("アプリケーションの編集")]
       ),
       _vm._v(" "),
@@ -20200,36 +20411,6 @@ var staticRenderFns = [
         [_vm._v("Save changes")]
       )
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticStyle: {
-          margin: "40px",
-          "text-align": "center",
-          "word-break": "break-all"
-        }
-      },
-      [
-        _c("h2", [_vm._v("基本情報")]),
-        _vm._v(" "),
-        _c("p"),
-        _vm._v("oooooooooooooooooooooooooooooooooooooooooooo"),
-        _c("p"),
-        _vm._v(" "),
-        _c("h2", [_vm._v("ドメイン情報")]),
-        _vm._v(" "),
-        _c("p", [_vm._v("oooooooooooooooooooooooooooooooooooooooooooo")]),
-        _vm._v(" "),
-        _c("h2", [_vm._v("ドメイン情報")]),
-        _vm._v(" "),
-        _c("p", [_vm._v("oooooooooooooooooooooooooooooooooooooooooooo")])
-      ]
-    )
   }
 ]
 render._withStripped = true

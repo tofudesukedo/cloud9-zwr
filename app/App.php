@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class App extends Model
 {
-    protected $fillable = ['title'];
+   Public function app_info()
+   {
+       return $this->hasMany('App\AppInfo', 'app_id');
+   }
+
+  Public function app_infra()
+  {
+      return $this->hasOne('App\AppInfra', 'app_id');
+  }
 }

@@ -12,13 +12,23 @@ class AppController extends Controller
         $apps = App::get();
         $result = compact('apps');
         return response()->json($result);
+        
+        //  $apps = App::with('app_info')
+        // ->with('app_infra')
+        // ->get();
+        
     }
     
     public function store(Request $request)
      {
-     $app = new App([
-       'title' => $request->get('title'),
-     ]);
+         
+     $app = new App();
+     $app->name = $request->name;
+     
+      $app->service_id = $request->service_id;
+      $app->app_type_cd = $request->app_type_cd;
+      $app->app_state_cd = $request->app_state_cd;
+      $app->enable_flg = $request->enable_flg;
      $app->save();
      
      $result = compact('app');
@@ -27,7 +37,7 @@ class AppController extends Controller
       public function update($id, Request $request)
    {
        $app = App::find($id);
-       $app->title = $request;
+       $app->name = $request;
        $app->save();
        
        $result = compact('app');
