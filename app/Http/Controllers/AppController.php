@@ -51,4 +51,16 @@ class AppController extends Controller
      $app->delete();
      return response()->json('successfully deleted');
    }
+   
+   public function search($app_name)
+    {   
+        if (!empty($app_name)) {
+            $apps = App::where('name', 'LIKE', "%$app_name%")
+                    ->limit(20)
+                    ->get();
+                    
+        $result = compact('apps');
+        return response()->json($result);
+        }
+    }
 }

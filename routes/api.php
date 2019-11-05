@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::post('/app_search/{app_name}', 'AppController@search');
 Route::get('/app_index', 'AppController@index');
 Route::post('/app_create', 'AppController@store');
 Route::post('/app_edit/{id}', 'AppController@update');

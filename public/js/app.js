@@ -2008,12 +2008,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       apps: [],
       app: {},
-      isActive: '1'
+      isActive: '1',
+      keyword: ''
     };
   },
   mounted: function mounted() {
@@ -2058,6 +2064,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     change: function change(num) {
       this.isActive = num;
+    },
+    search: function search() {
+      var _this4 = this;
+
+      axios.post('/api/app_search/' + this.keyword).then(function (res) {
+        _this4.apps = res.data.apps;
+        console.log(res.data);
+      })["catch"](function (error) {
+        console.log('データの取得に失敗しました。');
+      });
     }
   }
 });
@@ -19809,7 +19825,47 @@ var render = function() {
     { staticClass: "index" },
     [
       _c("div", { staticClass: "app-content" }, [
-        _vm._m(0),
+        _c("ul", { staticClass: "app-header" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("li", [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.keyword,
+                  expression: "keyword"
+                }
+              ],
+              staticClass: "form-control search-query span3",
+              attrs: { type: "text", placeholder: "Search" },
+              domProps: { value: _vm.keyword },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.keyword = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "ml-3 btn btn-outline-success",
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.search()
+                  }
+                }
+              },
+              [_vm._v("\n                    Search\n                ")]
+            )
+          ])
+        ]),
         _vm._v(" "),
         _c("div", [
           _c("h1", [_vm._v("アプリケーション")]),
@@ -20272,30 +20328,21 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("ul", { staticClass: "app-header" }, [
-      _c("li", [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-success",
-            attrs: {
-              type: "button",
-              "data-toggle": "modal",
-              "data-target": "#exampleModal"
-            }
-          },
-          [_vm._v("追加")]
-        ),
-        _vm._v(" "),
-        _c("span", { staticClass: "btn btn-primary" }, [_vm._v("CSVファイル")])
-      ]),
+    return _c("li", [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-success",
+          attrs: {
+            type: "button",
+            "data-toggle": "modal",
+            "data-target": "#exampleModal"
+          }
+        },
+        [_vm._v("追加")]
+      ),
       _vm._v(" "),
-      _c("li", [
-        _c("input", {
-          staticClass: "search-query span3",
-          attrs: { type: "text", placeholder: "Search" }
-        })
-      ])
+      _c("span", { staticClass: "btn btn-primary" }, [_vm._v("CSVファイル")])
     ])
   },
   function() {

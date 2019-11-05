@@ -2,8 +2,13 @@
     <div class="index">
     	<div class="app-content">
     		<ul class="app-header">
-    			<li> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">追加</button> <span class="btn btn-primary">CSVファイル</span> </li>
-    			<li><input type="text" class="search-query span3" placeholder="Search"></li>
+    			<li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">追加</button> <span class="btn btn-primary">CSVファイル</span> </li>
+    			<li>
+    			    <input type="text" class="form-control search-query span3" v-model="keyword" placeholder="Search">
+    			    <button class="ml-3 btn btn-outline-success" v-on:click.prevent="search()">
+                        Search
+                    </button>
+                </li>
     		</ul>
     		<div>
     			<h1>アプリケーション</h1>
@@ -115,7 +120,8 @@
             return {
                apps: [],
                app:{},
-               isActive: '1'
+               isActive: '1',
+               keyword: ''
             }
         },
         mounted: function(){
@@ -145,17 +151,27 @@
                  });
                  e.stopPropagation();
             },
-            detailShow: function(id) {
+            detailShow(id) {
                 $('.app-detail' + id).addClass("active");
                 $('.app-content').addClass("active");
             },
-            closeDetail: function(id) {
+            closeDetail(id) {
                 $('.app-detail' + id).removeClass("active");
                 $('.app-content').removeClass("active");
             },
-            change: function(num){
+            change(num){
               this.isActive = num
             },
-        }
+            search() {
+                axios.post('/api/app_search/'+ this.keyword)
+                    .then(res => {
+                        this.apps = res.data.apps;
+                        console.log(res.data);
+                    })
+                    .catch(error => {
+                        console.log('データの取得に失敗しました。');
+                    });
+            }
+        },
     }
 </script>
