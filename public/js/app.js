@@ -2013,11 +2013,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       apps: [],
       app: {},
+      app_edit: {},
       isActive: '1',
       keyword: ''
     };
@@ -2032,6 +2053,7 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
+    // 新規アプリ追加
     addApp: function addApp() {
       var _this2 = this;
 
@@ -2040,36 +2062,57 @@ __webpack_require__.r(__webpack_exports__);
         _this2.apps.push(response.data.app);
       });
     },
-    editApp: function editApp(id, e) {
-      var uri = "/api/app_edit/".concat(id);
-      this.axios.get(uri, this.app).then(function (response) {});
-      e.stopPropagation();
-    },
-    deleteApp: function deleteApp(id, e) {
+    // アプリ編集
+    editApp: function editApp(id) {
       var _this3 = this;
+
+      var uri = "/api/app_edit/".concat(id);
+      this.axios.post(uri, this.app_edit).then(function (response) {
+        _this3.apps.splice(_this3.apps.indexOf(id), 1, response.data.app);
+      });
+    },
+    // アプリケーション削除
+    deleteApp: function deleteApp(id, e) {
+      var _this4 = this;
 
       var uri = "/api/app_delete/".concat(id);
       this.axios["delete"](uri).then(function (response) {
-        _this3.apps.splice(_this3.apps.indexOf(id), 1);
+        _this4.apps.splice(_this4.apps.indexOf(id), 1);
       });
       e.stopPropagation();
     },
+    // 編集モーダル表示
+    showEditModal: function showEditModal(id, e) {
+      $('.edit-modal' + id).addClass("active");
+      $('.app-content').addClass("active");
+      e.stopPropagation();
+    },
+    // 編集モーダル非表示
+    closeEditModal: function closeEditModal(id, e) {
+      $('.edit-modal' + id).removeClass("active");
+      $('.app-content').removeClass("active");
+      e.stopPropagation();
+    },
+    // アプリケーション詳細表示
     detailShow: function detailShow(id) {
       $('.app-detail' + id).addClass("active");
       $('.app-content').addClass("active");
     },
+    // 詳細非表示
     closeDetail: function closeDetail(id) {
       $('.app-detail' + id).removeClass("active");
       $('.app-content').removeClass("active");
     },
-    change: function change(num) {
+    // タブ切り替え
+    tabChange: function tabChange(num) {
       this.isActive = num;
     },
+    // 検索
     search: function search() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.post('/api/app_search/' + this.keyword).then(function (res) {
-        _this4.apps = res.data.apps;
+        _this5.apps = res.data.apps;
         console.log(res.data);
       })["catch"](function (error) {
         console.log('データの取得に失敗しました。');
@@ -19862,7 +19905,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("\n                    Search\n                ")]
+              [_vm._v("\n                        Search\n                    ")]
             )
           ])
         ]),
@@ -19896,13 +19939,10 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-success",
-                          attrs: {
-                            "data-toggle": "modal",
-                            "data-target": "#editModal"
-                          },
+                          attrs: { "data-toggle": "modal" },
                           on: {
                             click: function($event) {
-                              return _vm.editApp(app.id, $event)
+                              return _vm.showEditModal(app.id, $event)
                             }
                           }
                         },
@@ -20126,82 +20166,6 @@ var render = function() {
               ]
             )
           ]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "modal fade",
-            attrs: {
-              id: "editModal",
-              tabindex: "-1",
-              role: "dialog",
-              "aria-labelledby": "exampleModalLabel",
-              "aria-hidden": "true"
-            }
-          },
-          [
-            _c(
-              "div",
-              { staticClass: "modal-dialog", attrs: { role: "document" } },
-              [
-                _c("div", { staticClass: "modal-content" }, [
-                  _vm._m(4),
-                  _vm._v(" "),
-                  _c(
-                    "form",
-                    {
-                      on: {
-                        submit: function($event) {
-                          $event.preventDefault()
-                          return _vm.editApp($event)
-                        }
-                      }
-                    },
-                    [
-                      _c("div", { staticClass: "modal-body" }, [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-md-12" }, [
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("App Name:")]),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.app.name,
-                                    expression: "app.name"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "text" },
-                                domProps: { value: _vm.app.name },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.app,
-                                      "name",
-                                      $event.target.value
-                                    )
-                                  }
-                                }
-                              })
-                            ])
-                          ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _vm._m(5)
-                    ]
-                  )
-                ])
-              ]
-            )
-          ]
         )
       ]),
       _vm._v(" "),
@@ -20238,7 +20202,7 @@ var render = function() {
                     class: { active: _vm.isActive === "1" },
                     on: {
                       click: function($event) {
-                        return _vm.change("1")
+                        return _vm.tabChange("1")
                       }
                     }
                   },
@@ -20251,7 +20215,7 @@ var render = function() {
                     class: { active: _vm.isActive === "2" },
                     on: {
                       click: function($event) {
-                        return _vm.change("2")
+                        return _vm.tabChange("2")
                       }
                     }
                   },
@@ -20263,8 +20227,8 @@ var render = function() {
                   {
                     class: { active: _vm.isActive === "3" },
                     on: {
-                      click: function($event) {
-                        return _vm.change("3")
+                      lick: function($event) {
+                        return _vm.tabChange("3")
                       }
                     }
                   },
@@ -20288,17 +20252,25 @@ var render = function() {
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.isActive === "2"
-                  ? _c("div", [
-                      _c("h3", [_vm._v("インフラ情報")]),
-                      _vm._v(" "),
-                      _c("p", [_vm._v("サービス名: " + _vm._s(app.name))]),
-                      _vm._v(" "),
-                      _c("p", [_vm._v("タイプ: " + _vm._s(app.app_type_cd))]),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v("ステータス: " + _vm._s(app.app_state_cd))
-                      ])
-                    ])
+                  ? _c(
+                      "div",
+                      _vm._l(app.app_infra, function(infra) {
+                        return _c("div", [
+                          _c("h3", [_vm._v("インフラ情報")]),
+                          _vm._v(" "),
+                          _c("p", [
+                            _vm._v("インフラ名: " + _vm._s(infra.name))
+                          ]),
+                          _vm._v(" "),
+                          _c("p", [
+                            _vm._v("ドメイン: " + _vm._s(infra.domain_id))
+                          ]),
+                          _vm._v(" "),
+                          _c("p", [_vm._v("サービス: " + _vm._s(infra.srv_id))])
+                        ])
+                      }),
+                      0
+                    )
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.isActive === "3"
@@ -20318,6 +20290,226 @@ var render = function() {
             ])
           ])
         ])
+      }),
+      _vm._v(" "),
+      _vm._l(_vm.apps, function(app) {
+        return _c(
+          "div",
+          { class: "edit-modal" + app.id + " " + "edit-modal" },
+          [
+            _c(
+              "div",
+              { staticClass: "modal-dialog", attrs: { role: "document" } },
+              [
+                _c("div", { staticClass: "modal-content" }, [
+                  _c("div", { staticClass: "modal-header" }, [
+                    _c(
+                      "h5",
+                      {
+                        staticClass: "modal-name",
+                        attrs: { id: "exampleModalLabel" }
+                      },
+                      [_vm._v("アプリケーションの編集")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "modal",
+                          "aria-label": "Close"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.closeEditModal(app.id, $event)
+                          }
+                        }
+                      },
+                      [
+                        _c("span", { attrs: { "aria-hidden": "true" } }, [
+                          _vm._v("×")
+                        ])
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.editApp(app.id)
+                        }
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-body" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("App Name:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app_edit.name,
+                                    expression: "app_edit.name"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.app_edit.name },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app_edit,
+                                      "name",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("service_id:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app_edit.service_id,
+                                    expression: "app_edit.service_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app_edit.service_id },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app_edit,
+                                      "service_id",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("app_state_cd:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app_edit.app_state_cd,
+                                    expression: "app_edit.app_state_cd"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app_edit.app_state_cd },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app_edit,
+                                      "app_state_cd",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("app_type_cd:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app_edit.app_type_cd,
+                                    expression: "app_edit.app_type_cd"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app_edit.app_type_cd },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app_edit,
+                                      "app_type_cd",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("enable_flg")]),
+                              _vm._v("x "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.app_edit.enable_flg,
+                                    expression: "app_edit.enable_flg"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.app_edit.enable_flg },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.app_edit,
+                                      "enable_flg",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(4, true)
+                    ]
+                  )
+                ])
+              ]
+            )
+          ]
+        )
       })
     ],
     2
@@ -20407,31 +20599,6 @@ var staticRenderFns = [
           attrs: { type: "submit" }
         },
         [_vm._v("Save changes")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c(
-        "h5",
-        { staticClass: "modal-name", attrs: { id: "exampleModalLabel" } },
-        [_vm._v("アプリケーションの編集")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
     ])
   },

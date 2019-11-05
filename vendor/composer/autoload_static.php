@@ -401,7 +401,10 @@ class ComposerStaticInit7799023e1329782148da9b0401da2db5
 
     public static $classMap = array (
         'App\\App' => __DIR__ . '/../..' . '/app/App.php',
+        'App\\AppInfo' => __DIR__ . '/../..' . '/app/AppInfo.php',
+        'App\\AppInfra' => __DIR__ . '/../..' . '/app/AppInfra.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Domain' => __DIR__ . '/../..' . '/app/Domain.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\AppController' => __DIR__ . '/../..' . '/app/Http/Controllers/AppController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
@@ -425,6 +428,7 @@ class ComposerStaticInit7799023e1329782148da9b0401da2db5
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
+        'App\\Srv' => __DIR__ . '/../..' . '/app/Srv.php',
         'App\\Task' => __DIR__ . '/../..' . '/app/Task.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',

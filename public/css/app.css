@@ -17,6 +17,13 @@
   list-style: none;
 }
 
+.index .app-header li .form-control {
+  vertical-align: bottom;
+  display: -webkit-inline-box;
+  display: inline-flex;
+  width: 50%;
+}
+
 .index .app-content {
   position: relative;
 }
@@ -32,7 +39,7 @@
   top: 0;
   left: 100%;
   background: #fff;
-  height: 700px;
+  height: 100%;
   width: 70%;
 }
 
@@ -73,6 +80,19 @@
   opacity: 1;
   right: 0;
   left: inherit !important;
+}
+
+.index .edit-modal {
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  display: none;
+}
+
+.index .edit-modal.active {
+  display: block;
 }
 
 .modal-footer .form-group {
