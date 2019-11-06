@@ -70,8 +70,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <ul class="tabs">
-                        <li @click="tabChange('1')" v-bind:class="{'active': isActive === '1'}">タブ1</li>
-                        <li @click="tabChange('2')" v-bind:class="{'active': isActive === '2'}">タブ2</li>
+                        <li @click="tabChange('1')" v-bind:class="{'active': isActive === '1'}">基本情報</li>
+                        <li @click="tabChange('2')" v-bind:class="{'active': isActive === '2'}">インフラ情報</li>
                         <li @lick="tabChange('3')" v-bind:class="{'active': isActive === '3'}">タブ3</li>
                     </ul>
             
@@ -84,10 +84,11 @@
                         </div>
                         <div v-if="isActive === '2'">
                             <div v-for="infra in app.app_infra">
+                                <td><button class="btn btn-success" data-toggle="modal" @click="showEditInfraModal(infra.id)">Edit</button></td>
                                 <h3>インフラ情報</h3>
                 				<p>インフラ名: {{ infra.name }}</p>
-                				<p>ドメイン: {{ infra.domain_id }}</p>
-                				<p>サービス: {{ infra.srv_id }}</p>
+                				<p @click="domainShow(infra.domain_id)" class="domain-name">ドメイン: {{ infra.domain.name }}</p>
+                				<p @click="serverShow(infra.srv_id)" class="server-name">サーバー: {{ infra.srv.name }}</p>
                 			</div>
                         </div>
                         <div v-if="isActive === '3'">
@@ -102,34 +103,100 @@
     	</div>
     	<!--ここまで詳細スライド-->
     	
+    	<!--ドメインスライド-->
+    	<div v-for="domain in domains">
+        	<div :class="'domain-detail'+ domain.id + ' ' + 'domain-details'">
+        		<div class="row"> 
+        		    <button @click="closeDomainDetail(domain.id)" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div>
+                        <h3>ドメイン情報</h3>
+        				<p>ドメイン名: {{ domain.name }}</p>
+        				<p>登録: {{ domain.register }}</p>
+        				<p>契約プラン: {{ domain.contract_plan }}</p>
+                    </div>
+        		</div>
+        	</div>
+    	</div>
+    	<!--ここまでドメインスライド-->
+    	
+    	<!--サーバースライド-->
+    	<div v-for="server in servers">
+        	<div :class="'server-detail'+ server.id + ' ' + 'server-details'">
+        		<div class="row"> 
+        		    <button @click="closeServerDetail(server.id)" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div>
+                        <h3>サーバー基本情報</h3>
+        				<p>サーバー名: {{ server.name }}</p>
+        				<p>ベンダー: {{server.vendor }}</p>
+        				<p>契約プラン: {{server.contract_plan }}</p>
+        				<p>OS: {{ server.os }}</p>
+        				<p>概要: {{ server.overview }}</p>
+                    </div>
+        		</div>
+        	</div>
+    	</div>
+    	<!--ここまでサーバースライド-->
+    	
         <!--編集モーダル-->
-        	<div v-for="app in apps" :class="'edit-modal'+ app.id + ' ' + 'edit-modal'">
-    			<div class="modal-dialog" role="document">
-    				<div class="modal-content">
-    					<div class="modal-header">
-    						<h5 class="modal-name" id="exampleModalLabel">アプリケーションの編集</h5> 
-    						<button @click="closeEditModal(app.id, $event)" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button> 
-                        </div>
-    					<form @submit.prevent="editApp(app.id)">
-    						<div class="modal-body">
-    							<div class="row">
-    								<div class="col-md-12">
-    									<div class="form-group"> <label>App Name:</label> <input type="text" class="form-control" v-model="app_edit.name"> </div>
-                						<div class="form-group"> <label>service_id:</label> <input type="number" class="form-control" v-model="app_edit.service_id"> </div>
-                						<div class="form-group"> <label>app_state_cd:</label> <input type="number" class="form-control" v-model="app_edit.app_state_cd"> </div>
-                						<div class="form-group"> <label>app_type_cd:</label> <input type="number" class="form-control" v-model="app_edit.app_type_cd"> </div>
-                						<div class="form-group"> <label>enable_flg</label>x <input type="number" class="form-control" v-model="app_edit.enable_flg"> </div>
-    								</div>
-    							</div>
-    						</div>
-    						<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="submit" class="form-group btn btn-primary">Save changes</button> </div>
-    					</form>
-    				</div>
-    			</div>
-    		</div>
+    	<div v-for="app in apps" :class="'edit-modal'+ app.id + ' ' + 'edit-modal'">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-name" id="exampleModalLabel">アプリケーションの編集</h5> 
+						<button @click="closeEditModal(app.id, $event)" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> 
+                    </div>
+					<form @submit.prevent="editApp(app.id)">
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group"> <label>App Name:</label> <input type="text" class="form-control" v-model="app_edit.name"> </div>
+            						<div class="form-group"> <label>service_id:</label> <input type="number" class="form-control" v-model="app_edit.service_id"> </div>
+            						<div class="form-group"> <label>app_state_cd:</label> <input type="number" class="form-control" v-model="app_edit.app_state_cd"> </div>
+            						<div class="form-group"> <label>app_type_cd:</label> <input type="number" class="form-control" v-model="app_edit.app_type_cd"> </div>
+            						<div class="form-group"> <label>enable_flg</label>x <input type="number" class="form-control" v-model="app_edit.enable_flg"> </div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="submit" class="form-group btn btn-primary">Save changes</button> </div>
+					</form>
+				</div>
+			</div>
+		</div>
 		<!--ここまで編集モーダル-->
+		
+		<!--インフラ情報編集モーダル-->
+    	<div v-for="app in apps">
+			<div v-for="infra in app.app_infra" :class="'edit-infra-modal'+ infra.id + ' ' + 'edit-infra-modal'" role="document" >
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-name" id="exampleModalLabel">インフラ情報の編集</h5> 
+						<button @click="closeEditInfraModal(infra.id)" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> 
+                    </div>
+					<form @submit.prevent="editInfra(infra.id)">
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group"> <label>Infra Name:</label> <input type="text" class="form-control" v-model="infra_edit.name"> </div>
+            						<div class="form-group"> <label>server_id:</label> <input type="number" class="form-control" v-model="infra_edit.srv_id"> </div>
+            						<div class="form-group"> <label>domain_id:</label> <input type="number" class="form-control" v-model="infra_edit.domain_id"> </div>
+            						<div class="form-group"> <label>enable_flg</label>x <input type="number" class="form-control" v-model="infra_edit.enable_flg"> </div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="submit" class="form-group btn btn-primary">Save changes</button> </div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!--ここまでインフラ情報編集モーダル-->
 		
     </div>
 </template>
@@ -146,14 +213,19 @@
                apps: [],
                app:{},
                app_edit:{},
+               infra_edit:{},
                isActive: '1',
-               keyword: ''
+               keyword: '',
+               domains:{},
+               servers:{}
             }
         },
         mounted: function(){
             const uri = "/api" + this.$route.path;
                 this.axios.get(uri).then(response => {
                     this.apps = response.data.apps;
+                    this.domains = response.data.domains;
+                    this.servers = response.data.servers;
                     console.log(response.data);
                 });
         },
@@ -192,15 +264,46 @@
                 $('.app-content').removeClass("active");
                 e.stopPropagation();
             },
+            // インフラ情報編集
+            editInfra(id) {
+                const uri = `/api/edit_infra/${id}`;
+                this.axios.post(uri, this.infra_edit).then((response) => {
+                    // this.apps.map(function(val, i, array){ //データに追加
+                    //     array[i].app_infra.splice(array[i].app_infra.indexOf(id), 1, response.data.infra);
+                    // });
+                });
+            },
+            // インフラ情報編集モーダル表示
+            showEditInfraModal(id) {
+                 $('.edit-infra-modal' + id).addClass("active");
+            },
+            // インフラ情報編集モーダル非表示
+            closeEditInfraModal(id) {
+                 $('.edit-infra-modal' + id).removeClass("active"); 
+            },
             // アプリケーション詳細表示
             detailShow(id) {
                 $('.app-detail' + id).addClass("active");
                 $('.app-content').addClass("active");
             },
+            // 詳細表示
+            domainShow(id) {
+                $('.domain-detail' + id).addClass("active");
+            },
+            // 詳細表示
+            serverShow(id) {
+                $('.server-detail' + id).addClass("active");
+            },
             // 詳細非表示
             closeDetail(id) {
                 $('.app-detail' + id).removeClass("active");
                 $('.app-content').removeClass("active");
+            },
+            closeServerDetail(id) {
+                $('.server-detail' + id).removeClass("active");
+            },
+            closeDomainDetail(id) {
+                $('.domain-detail' + id).removeClass("active");
             },
             // タブ切り替え
             tabChange(num){

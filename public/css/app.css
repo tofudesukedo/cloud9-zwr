@@ -33,7 +33,9 @@
   opacity: 0.1;
 }
 
-.index .app-details {
+.index .app-details,
+.index .domain-details,
+.index .server-details {
   opacity: 0;
   position: absolute;
   top: 0;
@@ -43,7 +45,9 @@
   width: 70%;
 }
 
-.index .app-details .tabs {
+.index .app-details .tabs,
+.index .domain-details .tabs,
+.index .server-details .tabs {
   cursor: pointer;
   padding: 0;
   width: 92%;
@@ -61,22 +65,30 @@
   word-break: break-all;
 }
 
-.index .app-details .tabs li {
+.index .app-details .tabs li,
+.index .domain-details .tabs li,
+.index .server-details .tabs li {
   padding: 12px 0 0 0;
   width: 33%;
 }
 
-.index .app-details .tabs li.active {
+.index .app-details .tabs li.active,
+.index .domain-details .tabs li.active,
+.index .server-details .tabs li.active {
   background: #fff;
 }
 
-.index .app-details .close {
+.index .app-details .close,
+.index .domain-details .close,
+.index .server-details .close {
   background: #fff;
   opacity: 1;
   height: 50px;
 }
 
-.index .app-details.active {
+.index .app-details.active,
+.index .domain-details.active,
+.index .server-details.active {
   opacity: 1;
   right: 0;
   left: inherit !important;
@@ -97,5 +109,18 @@
 
 .modal-footer .form-group {
   margin-bottom: 0;
+}
+
+.edit-infra-modal {
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  display: none;
+}
+
+.edit-infra-modal.active {
+  display: block;
 }
 

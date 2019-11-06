@@ -2035,6 +2035,73 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'app',
@@ -2046,8 +2113,11 @@ __webpack_require__.r(__webpack_exports__);
       apps: [],
       app: {},
       app_edit: {},
+      infra_edit: {},
       isActive: '1',
-      keyword: ''
+      keyword: '',
+      domains: {},
+      servers: {}
     };
   },
   mounted: function mounted() {
@@ -2056,6 +2126,8 @@ __webpack_require__.r(__webpack_exports__);
     var uri = "/api" + this.$route.path;
     this.axios.get(uri).then(function (response) {
       _this.apps = response.data.apps;
+      _this.domains = response.data.domains;
+      _this.servers = response.data.servers;
       console.log(response.data);
     });
   },
@@ -2100,15 +2172,45 @@ __webpack_require__.r(__webpack_exports__);
       $('.app-content').removeClass("active");
       e.stopPropagation();
     },
+    // インフラ情報編集
+    editInfra: function editInfra(id) {
+      var uri = "/api/edit_infra/".concat(id);
+      this.axios.post(uri, this.infra_edit).then(function (response) {// this.apps.map(function(val, i, array){ //データに追加
+        //     array[i].app_infra.splice(array[i].app_infra.indexOf(id), 1, response.data.infra);
+        // });
+      });
+    },
+    // インフラ情報編集モーダル表示
+    showEditInfraModal: function showEditInfraModal(id) {
+      $('.edit-infra-modal' + id).addClass("active");
+    },
+    // インフラ情報編集モーダル非表示
+    closeEditInfraModal: function closeEditInfraModal(id) {
+      $('.edit-infra-modal' + id).removeClass("active");
+    },
     // アプリケーション詳細表示
     detailShow: function detailShow(id) {
       $('.app-detail' + id).addClass("active");
       $('.app-content').addClass("active");
     },
+    // 詳細表示
+    domainShow: function domainShow(id) {
+      $('.domain-detail' + id).addClass("active");
+    },
+    // 詳細表示
+    serverShow: function serverShow(id) {
+      $('.server-detail' + id).addClass("active");
+    },
     // 詳細非表示
     closeDetail: function closeDetail(id) {
       $('.app-detail' + id).removeClass("active");
       $('.app-content').removeClass("active");
+    },
+    closeServerDetail: function closeServerDetail(id) {
+      $('.server-detail' + id).removeClass("active");
+    },
+    closeDomainDetail: function closeDomainDetail(id) {
+      $('.domain-detail' + id).removeClass("active");
     },
     // タブ切り替え
     tabChange: function tabChange(num) {
@@ -23928,7 +24030,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("タブ1")]
+                  [_vm._v("基本情報")]
                 ),
                 _vm._v(" "),
                 _c(
@@ -23941,7 +24043,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("タブ2")]
+                  [_vm._v("インフラ情報")]
                 ),
                 _vm._v(" "),
                 _c(
@@ -23978,17 +24080,53 @@ var render = function() {
                       "div",
                       _vm._l(app.app_infra, function(infra) {
                         return _c("div", [
+                          _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                attrs: { "data-toggle": "modal" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.showEditInfraModal(infra.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("Edit")]
+                            )
+                          ]),
+                          _vm._v(" "),
                           _c("h3", [_vm._v("インフラ情報")]),
                           _vm._v(" "),
                           _c("p", [
                             _vm._v("インフラ名: " + _vm._s(infra.name))
                           ]),
                           _vm._v(" "),
-                          _c("p", [
-                            _vm._v("ドメイン: " + _vm._s(infra.domain_id))
-                          ]),
+                          _c(
+                            "p",
+                            {
+                              staticClass: "domain-name",
+                              on: {
+                                click: function($event) {
+                                  return _vm.domainShow(infra.domain_id)
+                                }
+                              }
+                            },
+                            [_vm._v("ドメイン: " + _vm._s(infra.domain.name))]
+                          ),
                           _vm._v(" "),
-                          _c("p", [_vm._v("サービス: " + _vm._s(infra.srv_id))])
+                          _c(
+                            "p",
+                            {
+                              staticClass: "server-name",
+                              on: {
+                                click: function($event) {
+                                  return _vm.serverShow(infra.srv_id)
+                                }
+                              }
+                            },
+                            [_vm._v("サーバー: " + _vm._s(infra.srv.name))]
+                          )
                         ])
                       }),
                       0
@@ -24011,6 +24149,102 @@ var render = function() {
               ])
             ])
           ])
+        ])
+      }),
+      _vm._v(" "),
+      _vm._l(_vm.domains, function(domain) {
+        return _c("div", [
+          _c(
+            "div",
+            { class: "domain-detail" + domain.id + " " + "domain-details" },
+            [
+              _c("div", { staticClass: "row" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.closeDomainDetail(domain.id)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c("div", [
+                  _c("h3", [_vm._v("ドメイン情報")]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("ドメイン名: " + _vm._s(domain.name))]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("登録: " + _vm._s(domain.register))]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("契約プラン: " + _vm._s(domain.contract_plan))
+                  ])
+                ])
+              ])
+            ]
+          )
+        ])
+      }),
+      _vm._v(" "),
+      _vm._l(_vm.servers, function(server) {
+        return _c("div", [
+          _c(
+            "div",
+            { class: "server-detail" + server.id + " " + "server-details" },
+            [
+              _c("div", { staticClass: "row" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: {
+                      type: "button",
+                      "data-dismiss": "modal",
+                      "aria-label": "Close"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.closeServerDetail(server.id)
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c("div", [
+                  _c("h3", [_vm._v("サーバー基本情報")]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("サーバー名: " + _vm._s(server.name))]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("ベンダー: " + _vm._s(server.vendor))]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("契約プラン: " + _vm._s(server.contract_plan))
+                  ]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("OS: " + _vm._s(server.os))]),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("概要: " + _vm._s(server.overview))])
+                ])
+              ])
+            ]
+          )
         ])
       }),
       _vm._v(" "),
@@ -24232,6 +24466,199 @@ var render = function() {
             )
           ]
         )
+      }),
+      _vm._v(" "),
+      _vm._l(_vm.apps, function(app) {
+        return _c(
+          "div",
+          _vm._l(app.app_infra, function(infra) {
+            return _c(
+              "div",
+              {
+                class: "edit-infra-modal" + infra.id + " " + "edit-infra-modal",
+                attrs: { role: "document" }
+              },
+              [
+                _c("div", { staticClass: "modal-content" }, [
+                  _c("div", { staticClass: "modal-header" }, [
+                    _c(
+                      "h5",
+                      {
+                        staticClass: "modal-name",
+                        attrs: { id: "exampleModalLabel" }
+                      },
+                      [_vm._v("インフラ情報の編集")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "modal",
+                          "aria-label": "Close"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.closeEditInfraModal(infra.id)
+                          }
+                        }
+                      },
+                      [
+                        _c("span", { attrs: { "aria-hidden": "true" } }, [
+                          _vm._v("×")
+                        ])
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "form",
+                    {
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.editInfra(infra.id)
+                        }
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-body" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("Infra Name:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.infra_edit.name,
+                                    expression: "infra_edit.name"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text" },
+                                domProps: { value: _vm.infra_edit.name },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.infra_edit,
+                                      "name",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("server_id:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.infra_edit.srv_id,
+                                    expression: "infra_edit.srv_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.infra_edit.srv_id },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.infra_edit,
+                                      "srv_id",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("domain_id:")]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.infra_edit.domain_id,
+                                    expression: "infra_edit.domain_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.infra_edit.domain_id },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.infra_edit,
+                                      "domain_id",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("enable_flg")]),
+                              _vm._v("x "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.infra_edit.enable_flg,
+                                    expression: "infra_edit.enable_flg"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "number" },
+                                domProps: { value: _vm.infra_edit.enable_flg },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.infra_edit,
+                                      "enable_flg",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              })
+                            ])
+                          ])
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(5, true)
+                    ]
+                  )
+                ])
+              ]
+            )
+          }),
+          0
+        )
       })
     ],
     2
@@ -24297,6 +24724,30 @@ var staticRenderFns = [
           }
         },
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-secondary",
+          attrs: { type: "button", "data-dismiss": "modal" }
+        },
+        [_vm._v("Close")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "form-group btn btn-primary",
+          attrs: { type: "submit" }
+        },
+        [_vm._v("Save changes")]
       )
     ])
   },

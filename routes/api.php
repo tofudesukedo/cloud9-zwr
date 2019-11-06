@@ -21,4 +21,5 @@ Route::post('/app_search/{app_name}', 'AppController@search');
 Route::get('/app_index', 'AppController@index');
 Route::post('/app_create', 'AppController@store');
 Route::post('/app_edit/{id}', 'AppController@update');
+Route::post('/edit_infra/{id}', 'AppController@editInfra');
 Route::delete('/app_delete/{id}', 'AppController@delete');

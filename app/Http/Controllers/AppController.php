@@ -5,19 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\TaskCollection;
 use App\App;
+use App\Domain;
+use App\Srv;
+use App\AppInfra;
 
-class AppController extends Controller
-{
+class AppController extends Controller {
+    
     public function index(){
         
+        $apps = App::with('app_info')
+            ->with(['app_infra' => function($q){
+                $q->with('domain')->with('srv');
+            }])->get();
         
-        // $apps = App::get();
+        $domains = Domain::get();
+        $servers = Srv::get();
         
-         $apps = App::with('app_info')
-        ->with('app_infra')
-        ->get();
-        
-        $result = compact('apps');
+        $result = compact('apps','domains','servers');
         return response()->json($result);
         
     }
@@ -67,4 +71,18 @@ class AppController extends Controller
             return response()->json($result);
         }
     }
+    
+    public function editInfra($id, Request $request){
+        
+        $infra = AppInfra::find($id);
+        $infra->name = $request->name;
+        $infra->srv_id = $request->srv_id;
+        $infra->domain_id = $request->domain_id;
+        $infra->enable_flg = $request->enable_flg;
+        $infra->save();
+       
+        $result = compact('infra');
+        return response()->json($result);    
+    }
+    
 }
