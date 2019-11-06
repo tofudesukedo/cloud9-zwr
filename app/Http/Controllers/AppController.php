@@ -11,12 +11,12 @@ use App\AppInfra;
 
 class AppController extends Controller {
     
-    public function index(){
+    public function index(Request $request){
         
         $apps = App::with('app_info')
             ->with(['app_infra' => function($q){
                 $q->with('domain')->with('srv');
-            }])->get();
+            }])->paginate(2);
         
         $domains = Domain::get();
         $servers = Srv::get();

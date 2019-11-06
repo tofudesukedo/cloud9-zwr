@@ -31,37 +31,51 @@
         						<td><button class="btn btn-danger" @click="deleteApp(app.id, $event)">Delete</button></td>
         					</tr>
     				</draggable>
+    				<!--ページネーション-->
+    				<ul class="pagination">
+                      <li :class="{disabled: current_page <= 1}"><a href="#" @click="change(1)">&laquo;</a></li>
+                      <li :class="{disabled: current_page <= 1}"><a href="#" @click="change(current_page - 1)">&lt;</a></li>
+                      <li v-for="page in pages" :key="page" :class="{active: page === current_page}">
+                        <p @click="change(page)">{{page}}</p>
+                      </li>
+                      <li :class="{disabled: current_page >= last_page}"><a href="#" @click="change(current_page + 1)">&gt;</a></li>
+                      <li :class="{disabled: current_page >= last_page}"><a href="#" @click="change(last_page)">&raquo;</a></li>
+                    </ul>
+                    <!--ページネーション-->
     			</table>
-    		</div>
-    		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    			<div class="modal-dialog" role="document">
-    				<div class="modal-content">
-    					<div class="modal-header">
-    						<h5 class="modal-name" id="exampleModalLabel">アプリケーションの追加</h5>
-    						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button> 
-                        </div>
-    					<form @submit.prevent="addApp">
-    						<div class="modal-body">
-    							<div class="row">
-    								<div class="col-md-12">
-    									<div class="form-group"> <label>App Name:</label> <input type="text" class="form-control" v-model="app.name"> </div>
-    									<div class="form-group"> <label>service_id:</label> <input type="number" class="form-control" v-model="app.service_id"> </div>
-    									<div class="form-group"> <label>app_state_cd:</label> <input type="number" class="form-control" v-model="app.app_state_cd"> </div>
-    									<div class="form-group"> <label>app_type_cd:</label> <input type="number" class="form-control" v-model="app.app_type_cd"> </div>
-    									<div class="form-group"> <label>enable_flg</label>x <input type="number" class="form-control" v-model="app.enable_flg"> </div>
-    								</div>
-    							</div>
-    						</div>
-    						<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="submit" class="form-group btn btn-primary">Save changes</button> </div>
-    					</form>
-    				</div>
-    			</div>
     		</div>
     	</div>
     	<!--ここまでメイン-->
     	
+        <!--アプリケーション追加-->
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-name" id="exampleModalLabel">アプリケーションの追加</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> 
+                    </div>
+					<form @submit.prevent="addApp">
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group"> <label>App Name:</label> <input type="text" class="form-control" v-model="app.name"> </div>
+									<div class="form-group"> <label>service_id:</label> <input type="number" class="form-control" v-model="app.service_id"> </div>
+									<div class="form-group"> <label>app_state_cd:</label> <input type="number" class="form-control" v-model="app.app_state_cd"> </div>
+									<div class="form-group"> <label>app_type_cd:</label> <input type="number" class="form-control" v-model="app.app_type_cd"> </div>
+									<div class="form-group"> <label>enable_flg</label>x <input type="number" class="form-control" v-model="app.enable_flg"> </div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="submit" class="form-group btn btn-primary">Save changes</button> </div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!--ここまで新規アプリケーション追加-->
+	
     	<!--詳細スライド-->
     	<div v-for="app in apps">
         	<div :class="'app-detail'+ app.id + ' ' + 'app-details'">
@@ -210,26 +224,42 @@
         },
         data() {
             return {
-               apps: [],
-               app:{},
-               app_edit:{},
-               infra_edit:{},
-               isActive: '1',
-               keyword: '',
-               domains:{},
-               servers:{}
+                apps: [],
+                app:{},
+                app_edit:{},
+                infra_edit:{},
+                isActive: '1',
+                keyword: '',
+                domains:{},
+                servers:{},
+                current_page: 1,
+                last_page: 1,
+                total: 1,
+                from: 0,
+                to: 0
             }
         },
         mounted: function(){
-            const uri = "/api" + this.$route.path;
-                this.axios.get(uri).then(response => {
-                    this.apps = response.data.apps;
-                    this.domains = response.data.domains;
-                    this.servers = response.data.servers;
-                    console.log(response.data);
-                });
+            this.load(1)
         },
         methods: {
+            // ページネーション
+            load(page) {
+                axios.get('/api/app_index?page=' + page).then((response) => {
+                  this.apps = response.data.apps.data
+                  this.current_page = response.data.apps.current_page
+                  this.last_page = response.data.apps.last_page
+                  this.total = response.data.apps.total
+                  this.from = response.data.apps.from
+                  this.to = response.data.apps.to
+                    this.domains = response.data.domains;
+                    this.servers = response.data.servers;
+                })
+            },
+            change(page) {
+                if (page >= 1 && page <= this.last_page)
+                this.load(page)
+            },
             // 新規アプリ追加
             addApp(){
                 const uri = '/api/app_create';
@@ -319,7 +349,15 @@
                 .catch(error => {
                     console.log('データの取得に失敗しました。');
                 });
-            }
+            },
         },
+        computed: {
+            pages() {
+                let start = _.max([this.current_page - 2, 1])
+                let end = _.min([start + 5, this.last_page + 1])
+                start = _.max([end - 5, 1])
+                return _.range(start, end)
+            },
+        }
     }
 </script>

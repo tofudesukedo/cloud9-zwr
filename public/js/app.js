@@ -2102,6 +2102,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'app',
@@ -2117,21 +2131,36 @@ __webpack_require__.r(__webpack_exports__);
       isActive: '1',
       keyword: '',
       domains: {},
-      servers: {}
+      servers: {},
+      current_page: 1,
+      last_page: 1,
+      total: 1,
+      from: 0,
+      to: 0
     };
   },
   mounted: function mounted() {
-    var _this = this;
-
-    var uri = "/api" + this.$route.path;
-    this.axios.get(uri).then(function (response) {
-      _this.apps = response.data.apps;
-      _this.domains = response.data.domains;
-      _this.servers = response.data.servers;
-      console.log(response.data);
-    });
+    this.load(1);
   },
   methods: {
+    // ページネーション
+    load: function load(page) {
+      var _this = this;
+
+      axios.get('/api/app_index?page=' + page).then(function (response) {
+        _this.apps = response.data.apps.data;
+        _this.current_page = response.data.apps.current_page;
+        _this.last_page = response.data.apps.last_page;
+        _this.total = response.data.apps.total;
+        _this.from = response.data.apps.from;
+        _this.to = response.data.apps.to;
+        _this.domains = response.data.domains;
+        _this.servers = response.data.servers;
+      });
+    },
+    change: function change(page) {
+      if (page >= 1 && page <= this.last_page) this.load(page);
+    },
     // 新規アプリ追加
     addApp: function addApp() {
       var _this2 = this;
@@ -2226,6 +2255,16 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log('データの取得に失敗しました。');
       });
+    }
+  },
+  computed: {
+    pages: function pages() {
+      var start = _.max([this.current_page - 2, 1]);
+
+      var end = _.min([start + 5, this.last_page + 1]);
+
+      start = _.max([end - 5, 1]);
+      return _.range(start, end);
     }
   }
 });
@@ -23790,208 +23829,302 @@ var render = function() {
                   )
                 }),
                 0
+              ),
+              _vm._v(" "),
+              _c(
+                "ul",
+                { staticClass: "pagination" },
+                [
+                  _c("li", { class: { disabled: _vm.current_page <= 1 } }, [
+                    _c(
+                      "a",
+                      {
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            return _vm.change(1)
+                          }
+                        }
+                      },
+                      [_vm._v("«")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("li", { class: { disabled: _vm.current_page <= 1 } }, [
+                    _c(
+                      "a",
+                      {
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            return _vm.change(_vm.current_page - 1)
+                          }
+                        }
+                      },
+                      [_vm._v("<")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.pages, function(page) {
+                    return _c(
+                      "li",
+                      {
+                        key: page,
+                        class: { active: page === _vm.current_page }
+                      },
+                      [
+                        _c(
+                          "p",
+                          {
+                            on: {
+                              click: function($event) {
+                                return _vm.change(page)
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(page))]
+                        )
+                      ]
+                    )
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "li",
+                    { class: { disabled: _vm.current_page >= _vm.last_page } },
+                    [
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.change(_vm.current_page + 1)
+                            }
+                          }
+                        },
+                        [_vm._v(">")]
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "li",
+                    { class: { disabled: _vm.current_page >= _vm.last_page } },
+                    [
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.change(_vm.last_page)
+                            }
+                          }
+                        },
+                        [_vm._v("»")]
+                      )
+                    ]
+                  )
+                ],
+                2
               )
             ],
             1
           )
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "modal fade",
-            attrs: {
-              id: "exampleModal",
-              tabindex: "-1",
-              role: "dialog",
-              "aria-labelledby": "exampleModalLabel",
-              "aria-hidden": "true"
-            }
-          },
-          [
-            _c(
-              "div",
-              { staticClass: "modal-dialog", attrs: { role: "document" } },
-              [
-                _c("div", { staticClass: "modal-content" }, [
-                  _vm._m(2),
-                  _vm._v(" "),
-                  _c(
-                    "form",
-                    {
-                      on: {
-                        submit: function($event) {
-                          $event.preventDefault()
-                          return _vm.addApp($event)
-                        }
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "exampleModal",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "exampleModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "modal-dialog", attrs: { role: "document" } },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c(
+                  "form",
+                  {
+                    on: {
+                      submit: function($event) {
+                        $event.preventDefault()
+                        return _vm.addApp($event)
                       }
-                    },
-                    [
-                      _c("div", { staticClass: "modal-body" }, [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-md-12" }, [
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("App Name:")]),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.app.name,
-                                    expression: "app.name"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "text" },
-                                domProps: { value: _vm.app.name },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.app,
-                                      "name",
-                                      $event.target.value
-                                    )
-                                  }
-                                }
-                              })
-                            ]),
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("div", { staticClass: "row" }, [
+                        _c("div", { staticClass: "col-md-12" }, [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("App Name:")]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("service_id:")]),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.app.service_id,
-                                    expression: "app.service_id"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "number" },
-                                domProps: { value: _vm.app.service_id },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.app,
-                                      "service_id",
-                                      $event.target.value
-                                    )
-                                  }
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.app.name,
+                                  expression: "app.name"
                                 }
-                              })
-                            ]),
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "text" },
+                              domProps: { value: _vm.app.name },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(_vm.app, "name", $event.target.value)
+                                }
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("service_id:")]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("app_state_cd:")]),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.app.app_state_cd,
-                                    expression: "app.app_state_cd"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "number" },
-                                domProps: { value: _vm.app.app_state_cd },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.app,
-                                      "app_state_cd",
-                                      $event.target.value
-                                    )
-                                  }
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.app.service_id,
+                                  expression: "app.service_id"
                                 }
-                              })
-                            ]),
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "number" },
+                              domProps: { value: _vm.app.service_id },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.app,
+                                    "service_id",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("app_state_cd:")]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("app_type_cd:")]),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.app.app_type_cd,
-                                    expression: "app.app_type_cd"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "number" },
-                                domProps: { value: _vm.app.app_type_cd },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.app,
-                                      "app_type_cd",
-                                      $event.target.value
-                                    )
-                                  }
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.app.app_state_cd,
+                                  expression: "app.app_state_cd"
                                 }
-                              })
-                            ]),
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "number" },
+                              domProps: { value: _vm.app.app_state_cd },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.app,
+                                    "app_state_cd",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("app_type_cd:")]),
                             _vm._v(" "),
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("label", [_vm._v("enable_flg")]),
-                              _vm._v("x "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.app.enable_flg,
-                                    expression: "app.enable_flg"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "number" },
-                                domProps: { value: _vm.app.enable_flg },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
-                                    }
-                                    _vm.$set(
-                                      _vm.app,
-                                      "enable_flg",
-                                      $event.target.value
-                                    )
-                                  }
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.app.app_type_cd,
+                                  expression: "app.app_type_cd"
                                 }
-                              })
-                            ])
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "number" },
+                              domProps: { value: _vm.app.app_type_cd },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.app,
+                                    "app_type_cd",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", [_vm._v("enable_flg")]),
+                            _vm._v("x "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.app.enable_flg,
+                                  expression: "app.enable_flg"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "number" },
+                              domProps: { value: _vm.app.enable_flg },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.app,
+                                    "enable_flg",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
                           ])
                         ])
-                      ]),
-                      _vm._v(" "),
-                      _vm._m(3)
-                    ]
-                  )
-                ])
-              ]
-            )
-          ]
-        )
-      ]),
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(3)
+                  ]
+                )
+              ])
+            ]
+          )
+        ]
+      ),
       _vm._v(" "),
       _vm._l(_vm.apps, function(app) {
         return _c("div", [
