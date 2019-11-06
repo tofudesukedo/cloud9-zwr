@@ -23833,49 +23833,67 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "ul",
-                { staticClass: "pagination" },
+                { staticClass: "pagination navigation example" },
                 [
-                  _c("li", { class: { disabled: _vm.current_page <= 1 } }, [
-                    _c(
-                      "a",
-                      {
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            return _vm.change(1)
+                  _c(
+                    "li",
+                    {
+                      staticClass: "page-item",
+                      class: { disabled: _vm.current_page <= 1 }
+                    },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.change(1)
+                            }
                           }
-                        }
-                      },
-                      [_vm._v("«")]
-                    )
-                  ]),
+                        },
+                        [_vm._v("«")]
+                      )
+                    ]
+                  ),
                   _vm._v(" "),
-                  _c("li", { class: { disabled: _vm.current_page <= 1 } }, [
-                    _c(
-                      "a",
-                      {
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            return _vm.change(_vm.current_page - 1)
+                  _c(
+                    "li",
+                    {
+                      staticClass: "page-item",
+                      class: { disabled: _vm.current_page <= 1 }
+                    },
+                    [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.change(_vm.current_page - 1)
+                            }
                           }
-                        }
-                      },
-                      [_vm._v("<")]
-                    )
-                  ]),
+                        },
+                        [_vm._v("<")]
+                      )
+                    ]
+                  ),
                   _vm._v(" "),
                   _vm._l(_vm.pages, function(page) {
                     return _c(
                       "li",
                       {
                         key: page,
+                        staticClass: "page-item",
                         class: { active: page === _vm.current_page }
                       },
                       [
                         _c(
-                          "p",
+                          "a",
                           {
+                            staticClass: "page-link",
                             on: {
                               click: function($event) {
                                 return _vm.change(page)
@@ -23890,11 +23908,15 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "li",
-                    { class: { disabled: _vm.current_page >= _vm.last_page } },
+                    {
+                      staticClass: "page-item",
+                      class: { disabled: _vm.current_page >= _vm.last_page }
+                    },
                     [
                       _c(
                         "a",
                         {
+                          staticClass: "page-link",
                           attrs: { href: "#" },
                           on: {
                             click: function($event) {
@@ -23909,11 +23931,15 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "li",
-                    { class: { disabled: _vm.current_page >= _vm.last_page } },
+                    {
+                      staticClass: "page-item",
+                      class: { disabled: _vm.current_page >= _vm.last_page }
+                    },
                     [
                       _c(
                         "a",
                         {
+                          staticClass: "page-link",
                           attrs: { href: "#" },
                           on: {
                             click: function($event) {
@@ -24184,12 +24210,12 @@ var render = function() {
                   {
                     class: { active: _vm.isActive === "3" },
                     on: {
-                      lick: function($event) {
+                      click: function($event) {
                         return _vm.tabChange("3")
                       }
                     }
                   },
-                  [_vm._v("タブ3")]
+                  [_vm._v("システム情報")]
                 )
               ]),
               _vm._v(" "),
@@ -24213,22 +24239,6 @@ var render = function() {
                       "div",
                       _vm._l(app.app_infra, function(infra) {
                         return _c("div", [
-                          _c("td", [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-success",
-                                attrs: { "data-toggle": "modal" },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.showEditInfraModal(infra.id)
-                                  }
-                                }
-                              },
-                              [_vm._v("Edit")]
-                            )
-                          ]),
-                          _vm._v(" "),
                           _c("h3", [_vm._v("インフラ情報")]),
                           _vm._v(" "),
                           _c("p", [
@@ -24259,6 +24269,20 @@ var render = function() {
                               }
                             },
                             [_vm._v("サーバー: " + _vm._s(infra.srv.name))]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success",
+                              attrs: { "data-toggle": "modal" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.showEditInfraModal(infra.id)
+                                }
+                              }
+                            },
+                            [_vm._v("Edit")]
                           )
                         ])
                       }),
@@ -24292,28 +24316,6 @@ var render = function() {
             { class: "domain-detail" + domain.id + " " + "domain-details" },
             [
               _c("div", { staticClass: "row" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "close",
-                    attrs: {
-                      type: "button",
-                      "data-dismiss": "modal",
-                      "aria-label": "Close"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.closeDomainDetail(domain.id)
-                      }
-                    }
-                  },
-                  [
-                    _c("span", { attrs: { "aria-hidden": "true" } }, [
-                      _vm._v("×")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
                 _c("div", [
                   _c("h3", [_vm._v("ドメイン情報")]),
                   _vm._v(" "),
@@ -24323,7 +24325,24 @@ var render = function() {
                   _vm._v(" "),
                   _c("p", [
                     _vm._v("契約プラン: " + _vm._s(domain.contract_plan))
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      on: {
+                        click: function($event) {
+                          return _vm.closeDomainDetail(domain.id)
+                        }
+                      }
+                    },
+                    [
+                      _c("span", { attrs: { "aria-hidden": "true" } }, [
+                        _vm._v("戻る")
+                      ])
+                    ]
+                  )
                 ])
               ])
             ]
@@ -24338,28 +24357,6 @@ var render = function() {
             { class: "server-detail" + server.id + " " + "server-details" },
             [
               _c("div", { staticClass: "row" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "close",
-                    attrs: {
-                      type: "button",
-                      "data-dismiss": "modal",
-                      "aria-label": "Close"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.closeServerDetail(server.id)
-                      }
-                    }
-                  },
-                  [
-                    _c("span", { attrs: { "aria-hidden": "true" } }, [
-                      _vm._v("×")
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
                 _c("div", [
                   _c("h3", [_vm._v("サーバー基本情報")]),
                   _vm._v(" "),
@@ -24373,7 +24370,24 @@ var render = function() {
                   _vm._v(" "),
                   _c("p", [_vm._v("OS: " + _vm._s(server.os))]),
                   _vm._v(" "),
-                  _c("p", [_vm._v("概要: " + _vm._s(server.overview))])
+                  _c("p", [_vm._v("概要: " + _vm._s(server.overview))]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      on: {
+                        click: function($event) {
+                          return _vm.closeServerDetail(server.id)
+                        }
+                      }
+                    },
+                    [
+                      _c("span", { attrs: { "aria-hidden": "true" } }, [
+                        _vm._v("戻る")
+                      ])
+                    ]
+                  )
                 ])
               ])
             ]

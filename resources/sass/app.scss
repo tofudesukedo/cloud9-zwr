@@ -1,5 +1,4 @@
 .index {
-    text-align: center;
     .app-header {
         padding: 20px 0;
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -22,9 +21,7 @@
         opacity: 0.1;
         }
     }
-    .app-details,
-    .domain-details,
-    .server-details
+    .app-details
     {
         opacity: 0;
         position: absolute;
@@ -32,7 +29,13 @@
         left: 100%;
         background: #fff;
         height: 100%;
-        width: 70%;
+        width: 100%;
+        .domain-name,
+        .server-name
+        {
+            border-bottom: 1px solid green;
+            cursor: pointer;
+        }
         .tabs {
             cursor: pointer;
             padding: 0;
@@ -57,6 +60,37 @@
             background: #fff;
             opacity: 1;
             height: 50px;
+        }
+        &.active {
+            opacity: 1;
+            right: 0;
+            left: inherit !important;
+        }
+    }
+    
+    .domain-details,
+    .server-details {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 100%;
+        background: #fff;
+        margin-top: 50px;
+        height: 80%;
+        width: 100%;
+        .row {
+            margin: 50px;
+            .domain-name,
+            .server-name
+            {
+                border-bottom: 1px solid green;
+                cursor: pointer;
+            }
+            .domain-name,
+            .server-name {
+                border-bottom: 1px solid green;
+                cursor: pointer;
+            }
         }
         &.active {
             opacity: 1;

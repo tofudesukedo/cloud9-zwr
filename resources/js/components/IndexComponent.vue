@@ -32,14 +32,14 @@
         					</tr>
     				</draggable>
     				<!--ページネーション-->
-    				<ul class="pagination">
-                      <li :class="{disabled: current_page <= 1}"><a href="#" @click="change(1)">&laquo;</a></li>
-                      <li :class="{disabled: current_page <= 1}"><a href="#" @click="change(current_page - 1)">&lt;</a></li>
-                      <li v-for="page in pages" :key="page" :class="{active: page === current_page}">
-                        <p @click="change(page)">{{page}}</p>
+    				<ul class="pagination navigation example">
+                      <li :class="{disabled: current_page <= 1}" class="page-item"><a class="page-link" href="#" @click="change(1)">&laquo;</a></li>
+                      <li :class="{disabled: current_page <= 1}" class="page-item"><a class="page-link" href="#" @click="change(current_page - 1)">&lt;</a></li>
+                      <li v-for="page in pages" :key="page" :class="{active: page === current_page}" class="page-item">
+                        <a @click="change(page)" class="page-link">{{page}}</a>
                       </li>
-                      <li :class="{disabled: current_page >= last_page}"><a href="#" @click="change(current_page + 1)">&gt;</a></li>
-                      <li :class="{disabled: current_page >= last_page}"><a href="#" @click="change(last_page)">&raquo;</a></li>
+                      <li :class="{disabled: current_page >= last_page}" class="page-item"><a class="page-link" href="#" @click="change(current_page + 1)">&gt;</a></li>
+                      <li :class="{disabled: current_page >= last_page}" class="page-item"><a class="page-link" href="#" @click="change(last_page)">&raquo;</a></li>
                     </ul>
                     <!--ページネーション-->
     			</table>
@@ -86,7 +86,7 @@
                     <ul class="tabs">
                         <li @click="tabChange('1')" v-bind:class="{'active': isActive === '1'}">基本情報</li>
                         <li @click="tabChange('2')" v-bind:class="{'active': isActive === '2'}">インフラ情報</li>
-                        <li @lick="tabChange('3')" v-bind:class="{'active': isActive === '3'}">タブ3</li>
+                        <li @click="tabChange('3')" v-bind:class="{'active': isActive === '3'}">システム情報</li>
                     </ul>
             
                     <ul class="contents">
@@ -98,11 +98,11 @@
                         </div>
                         <div v-if="isActive === '2'">
                             <div v-for="infra in app.app_infra">
-                                <td><button class="btn btn-success" data-toggle="modal" @click="showEditInfraModal(infra.id)">Edit</button></td>
                                 <h3>インフラ情報</h3>
                 				<p>インフラ名: {{ infra.name }}</p>
                 				<p @click="domainShow(infra.domain_id)" class="domain-name">ドメイン: {{ infra.domain.name }}</p>
                 				<p @click="serverShow(infra.srv_id)" class="server-name">サーバー: {{ infra.srv.name }}</p>
+                				<button class="btn btn-success" data-toggle="modal" @click="showEditInfraModal(infra.id)">Edit</button>
                 			</div>
                         </div>
                         <div v-if="isActive === '3'">
@@ -121,14 +121,14 @@
     	<div v-for="domain in domains">
         	<div :class="'domain-detail'+ domain.id + ' ' + 'domain-details'">
         		<div class="row"> 
-        		    <button @click="closeDomainDetail(domain.id)" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <div>
                         <h3>ドメイン情報</h3>
         				<p>ドメイン名: {{ domain.name }}</p>
         				<p>登録: {{ domain.register }}</p>
         				<p>契約プラン: {{ domain.contract_plan }}</p>
+        				<button class="btn btn-secondary" @click="closeDomainDetail(domain.id)">
+                            <span aria-hidden="true">戻る</span>
+                        </button>
                     </div>
         		</div>
         	</div>
@@ -139,9 +139,6 @@
     	<div v-for="server in servers">
         	<div :class="'server-detail'+ server.id + ' ' + 'server-details'">
         		<div class="row"> 
-        		    <button @click="closeServerDetail(server.id)" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                     <div>
                         <h3>サーバー基本情報</h3>
         				<p>サーバー名: {{ server.name }}</p>
@@ -149,6 +146,9 @@
         				<p>契約プラン: {{server.contract_plan }}</p>
         				<p>OS: {{ server.os }}</p>
         				<p>概要: {{ server.overview }}</p>
+        				<button class="btn btn-secondary" @click="closeServerDetail(server.id)">
+                            <span aria-hidden="true">戻る</span>
+                        </button>
                     </div>
         		</div>
         	</div>
@@ -246,12 +246,12 @@
             // ページネーション
             load(page) {
                 axios.get('/api/app_index?page=' + page).then((response) => {
-                  this.apps = response.data.apps.data
-                  this.current_page = response.data.apps.current_page
-                  this.last_page = response.data.apps.last_page
-                  this.total = response.data.apps.total
-                  this.from = response.data.apps.from
-                  this.to = response.data.apps.to
+                    this.apps = response.data.apps.data
+                    this.current_page = response.data.apps.current_page
+                    this.last_page = response.data.apps.last_page
+                    this.total = response.data.apps.total
+                    this.from = response.data.apps.from
+                    this.to = response.data.apps.to
                     this.domains = response.data.domains;
                     this.servers = response.data.servers;
                 })

@@ -16,7 +16,7 @@ class AppController extends Controller {
         $apps = App::with('app_info')
             ->with(['app_infra' => function($q){
                 $q->with('domain')->with('srv');
-            }])->paginate(2);
+            }])->paginate(5);
         
         $domains = Domain::get();
         $servers = Srv::get();

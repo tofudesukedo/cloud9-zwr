@@ -1,7 +1,3 @@
-.index {
-  text-align: center;
-}
-
 .index .app-header {
   padding: 20px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -33,21 +29,23 @@
   opacity: 0.1;
 }
 
-.index .app-details,
-.index .domain-details,
-.index .server-details {
+.index .app-details {
   opacity: 0;
   position: absolute;
   top: 0;
   left: 100%;
   background: #fff;
   height: 100%;
-  width: 70%;
+  width: 100%;
 }
 
-.index .app-details .tabs,
-.index .domain-details .tabs,
-.index .server-details .tabs {
+.index .app-details .domain-name,
+.index .app-details .server-name {
+  border-bottom: 1px solid green;
+  cursor: pointer;
+}
+
+.index .app-details .tabs {
   cursor: pointer;
   padding: 0;
   width: 92%;
@@ -65,28 +63,60 @@
   word-break: break-all;
 }
 
-.index .app-details .tabs li,
-.index .domain-details .tabs li,
-.index .server-details .tabs li {
+.index .app-details .tabs li {
   padding: 12px 0 0 0;
   width: 33%;
 }
 
-.index .app-details .tabs li.active,
-.index .domain-details .tabs li.active,
-.index .server-details .tabs li.active {
+.index .app-details .tabs li.active {
   background: #fff;
 }
 
-.index .app-details .close,
-.index .domain-details .close,
-.index .server-details .close {
+.index .app-details .close {
   background: #fff;
   opacity: 1;
   height: 50px;
 }
 
-.index .app-details.active,
+.index .app-details.active {
+  opacity: 1;
+  right: 0;
+  left: inherit !important;
+}
+
+.index .domain-details,
+.index .server-details {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  background: #fff;
+  margin-top: 50px;
+  height: 80%;
+  width: 100%;
+}
+
+.index .domain-details .row,
+.index .server-details .row {
+  margin: 50px;
+}
+
+.index .domain-details .row .domain-name,
+.index .domain-details .row .server-name,
+.index .server-details .row .domain-name,
+.index .server-details .row .server-name {
+  border-bottom: 1px solid green;
+  cursor: pointer;
+}
+
+.index .domain-details .row .domain-name,
+.index .domain-details .row .server-name,
+.index .server-details .row .domain-name,
+.index .server-details .row .server-name {
+  border-bottom: 1px solid green;
+  cursor: pointer;
+}
+
 .index .domain-details.active,
 .index .server-details.active {
   opacity: 1;
