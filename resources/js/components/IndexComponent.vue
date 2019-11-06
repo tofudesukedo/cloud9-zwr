@@ -23,14 +23,14 @@
     						<th>Delete</th>
     					</tr>
     				</thead>
-    				<tbody>
-    					<tr @click="detailShow(app.id)" v-for="app in apps" :key="app.id">
-    						<td>{{ app.id }}</td>
-    						<td>{{ app.name }}</td>
-    						<td><button class="btn btn-success" data-toggle="modal" @click="showEditModal(app.id, $event)">Edit</button></td>
-    						<td><button class="btn btn-danger" @click="deleteApp(app.id, $event)">Delete</button></td>
-    					</tr>
-    				</tbody>
+    				<draggable tag="tbody">
+        					 <tr @click="detailShow(app.id)" v-for="app in apps" :key="app.id">
+        						<td>{{ app.id }}</td>
+        						<td>{{ app.name }}</td>
+        						<td><button class="btn btn-success" data-toggle="modal" @click="showEditModal(app.id, $event)">Edit</button></td>
+        						<td><button class="btn btn-danger" @click="deleteApp(app.id, $event)">Delete</button></td>
+        					</tr>
+    				</draggable>
     			</table>
     		</div>
     		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -135,7 +135,12 @@
 </template>
 
 <script>
+    import draggable from 'vuedraggable';
     export default{
+        name: 'app',
+        components: {
+            draggable,
+        },
         data() {
             return {
                apps: [],
