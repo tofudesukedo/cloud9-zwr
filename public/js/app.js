@@ -2115,7 +2115,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'app',
@@ -2143,6 +2142,11 @@ __webpack_require__.r(__webpack_exports__);
     this.load(1);
   },
   methods: {
+    sort: function sort() {
+      this.apps.sort(function (a, b) {
+        return a < b ? 1 : -1;
+      });
+    },
     // ページネーション
     load: function load(page) {
       var _this = this;
@@ -23774,7 +23778,31 @@ var render = function() {
             "table",
             { staticClass: "table table-hover" },
             [
-              _vm._m(1),
+              _c("thead", [
+                _c("tr", [
+                  _c("th", [
+                    _vm._v("ID"),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "ml-5 btn btn-small btn-secondary",
+                        on: {
+                          click: function($event) {
+                            return _vm.sort()
+                          }
+                        }
+                      },
+                      [_vm._v("ID順番切り替え")]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Name")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Edit")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Delete")])
+                ])
+              ]),
               _vm._v(" "),
               _c(
                 "draggable",
@@ -23978,7 +24006,7 @@ var render = function() {
             { staticClass: "modal-dialog", attrs: { role: "document" } },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(2),
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
                   "form",
@@ -24143,7 +24171,7 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(3)
+                    _vm._m(2)
                   ]
                 )
               ])
@@ -24605,7 +24633,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _vm._m(4, true)
+                      _vm._m(3, true)
                     ]
                   )
                 ])
@@ -24797,7 +24825,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _vm._m(5, true)
+                      _vm._m(4, true)
                     ]
                   )
                 ])
@@ -24831,22 +24859,6 @@ var staticRenderFns = [
       ),
       _vm._v(" "),
       _c("span", { staticClass: "btn btn-primary" }, [_vm._v("CSVファイル")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("ID")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Edit")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Delete")])
-      ])
     ])
   },
   function() {

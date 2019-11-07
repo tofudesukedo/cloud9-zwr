@@ -17,7 +17,7 @@
     			<table class="table table-hover">
     				<thead>
     					<tr>
-    						<th>ID</th>
+    						<th>ID<button class="ml-5 btn btn-small btn-secondary" @click="sort()"">ID順番切り替え</button></th>
     						<th>Name</th>
     						<th>Edit</th>
     						<th>Delete</th>
@@ -211,7 +211,6 @@
 			</div>
 		</div>
 		<!--ここまでインフラ情報編集モーダル-->
-		
     </div>
 </template>
 
@@ -236,13 +235,19 @@
                 last_page: 1,
                 total: 1,
                 from: 0,
-                to: 0
+                to: 0,
             }
         },
         mounted: function(){
             this.load(1)
         },
         methods: {
+            
+            sort(){
+                this.apps.sort(function(a,b){
+                    return (a < b ? 1 : -1);
+                });
+               },
             // ページネーション
             load(page) {
                 axios.get('/api/app_index?page=' + page).then((response) => {
