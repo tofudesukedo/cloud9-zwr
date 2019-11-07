@@ -7,6 +7,12 @@ import axios from 'axios';
 import App from './App.vue';
 Vue.use(VueAxios, axios);
 
+import ElementUI from 'element-ui';
+import locale from 'element-ui/lib/locale/lang/ja';
+import 'element-ui/lib/theme-chalk/index.css';
+
+Vue.use(ElementUI, { locale });
+
 import HomeComponent from './components/HomeComponent.vue';
 import IndexComponent from './components/IndexComponent.vue'
 import InfiniteLoading from 'vue-infinite-loading'

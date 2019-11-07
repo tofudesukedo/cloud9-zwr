@@ -3,8 +3,9 @@
         
         <!--メイン-->
     	<div class="app-content">
+    	    <h1>アプリケーション一覧</h1>
     		<ul class="app-header">
-    			<li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">追加</button> <span class="btn btn-primary">CSVファイル</span> </li>
+    			<li><el-button type="primary" @click="centerDialogVisible = true">追加</el-button></li>
     			<li>
     			    <input type="text" class="form-control search-query span3" v-model="keyword" placeholder="Search">
     			    <button class="ml-3 btn btn-outline-success" v-on:click.prevent="search()">
@@ -13,58 +14,83 @@
                 </li>
     		</ul>
     		<div>
-    			<h1>アプリケーション</h1>
     			<table class="table table-hover">
     				<thead>
     					<tr>
-    						<th>ID<button class="ml-5 btn btn-small btn-secondary" @click="sort()">ID順番切り替え</button></th>
+    						<th>ID<el-button  class="ml-3" size="min" icon="el-icon-upload2" @click="sort()"></el-button></th>
     						<th>Name</th>
     						<th>Edit</th>
     						<th>Delete</th>
+    						<th>Detail</th>
     					</tr>
     				</thead>
     				<draggable tag="tbody">
-        					 <tr @click="detailShow(app.id)" v-for="app in apps" :key="app.id">
-        						<td>{{ app.id }}</td>
-        						<td>{{ app.name }}</td>
-        						<td><button class="btn btn-success" data-toggle="modal" @click="showEditModal(app.id, $event)">Edit</button></td>
-        						<td><button class="btn btn-danger" @click="deleteApp(app.id, $event)">Delete</button></td>
-        					</tr>
-        					<infinite-loading @infinite="infiniteHandler"></infinite-loading>
+    					 <tr v-for="app in apps" :key="app.id">
+    						<td>{{ app.id }}</td>
+    						<td>{{ app.name }}</td>
+    						<td><el-button type="success" icon="el-icon-edit" @click="showEditModal(app.id, $event)" circle></el-button></td>
+    						<td><el-button type="danger" icon="el-icon-delete" @click="deleteApp(app.id, $event)" circle></el-button></td>
+    						<td>
+    						    <el-button @click="showAppDetail(app.id)">
+                                    詳細
+                                </el-button>
+                            </td>
+    					</tr>
+    					<infinite-loading @infinite="infiniteHandler"></infinite-loading>
     				</draggable>
     			</table>
     		</div>
     	</div>
     	<!--ここまでメイン-->
     	
-        <!--アプリケーション追加-->
-		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-name" id="exampleModalLabel">アプリケーションの追加</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button> 
-                    </div>
-					<form @submit.prevent="addApp">
-						<div class="modal-body">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group"> <label>App Name:</label> <input type="text" class="form-control" v-model="app.name"> </div>
-									<div class="form-group"> <label>service_id:</label> <input type="number" class="form-control" v-model="app.service_id"> </div>
-									<div class="form-group"> <label>app_state_cd:</label> <input type="number" class="form-control" v-model="app.app_state_cd"> </div>
-									<div class="form-group"> <label>app_type_cd:</label> <input type="number" class="form-control" v-model="app.app_type_cd"> </div>
-									<div class="form-group"> <label>enable_flg</label>x <input type="number" class="form-control" v-model="app.enable_flg"> </div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="submit" class="form-group btn btn-primary">Save changes</button> </div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!--ここまで新規アプリケーション追加-->
+    	<el-dialog
+          title="アプリケーション追加"
+          :visible.sync="centerDialogVisible"
+          center>
+    	    <el-form>
+    	        <el-form-item label="application name">
+                    <el-input type="text" v-model="app.name"></el-input>
+                </el-form-item>
+                <el-form-item label="service_id">
+    			    <el-input type="number" v-model="app.service_id"></el-input> 
+    			</el-form-item label="app_state_cd">
+    			    <el-input type="number" v-model="app.app_state_cd"></el-input>
+    			</el-form-item>
+    			<el-form-item label="app_type_cd">
+    			    <el-input type="number" v-model="app.app_type_cd"></el-input>
+    			</el-form-item>
+    			<el-form-item label="enable_flg">
+    			    <el-input type="number" v-model="app.enable_flg"></el-input>
+    			</el-form-item>
+                <el-button type="primary" @click="addApp">Confirm</el-button>
+            </el-form>
+        </el-dialog>
+        
+        <!--編集モーダル-->
+        <el-dialog
+          title="アプリケーション編集"
+          :visible.sync="appEditModal"
+          center>
+    	    <el-form>
+    	        <el-form-item label="application name">
+                    <el-input type="text" v-model="app_edit.name"></el-input>
+                </el-form-item>
+                <el-form-item label="service_id">
+    			    <el-input type="number" v-model="app_edit.service_id"></el-input> 
+    			</el-form-item label="app_state_cd">
+    			<el-form-item label="app_state_cd">
+    			    <el-input type="number" v-model="app_edit.app_state_cd"></el-input>
+    			</el-form-item>
+    			<el-form-item label="app_type_cd">
+    			    <el-input type="number" v-model="app_edit.app_type_cd"></el-input>
+    			</el-form-item>
+    			<el-form-item label="enable_flg">
+    			    <el-input type="number" v-model="app_edit.enable_flg"></el-input>
+    			</el-form-item>
+                <el-button type="primary" @click="appEdit">Confirm</el-button>
+            </el-form>
+        </el-dialog>
+        <!--ここまで編集モーダル-->
 	
     	<!--詳細スライド-->
     	<div v-for="app in apps">
@@ -145,35 +171,6 @@
     	</div>
     	<!--ここまでサーバースライド-->
     	
-        <!--編集モーダル-->
-    	<div v-for="app in apps" :class="'edit-modal'+ app.id + ' ' + 'edit-modal'">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-name" id="exampleModalLabel">アプリケーションの編集</h5> 
-						<button @click="closeEditModal(app.id, $event)" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button> 
-                    </div>
-					<form @submit.prevent="editApp(app.id)">
-						<div class="modal-body">
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group"> <label>App Name:</label> <input type="text" class="form-control" v-model="app_edit.name"> </div>
-            						<div class="form-group"> <label>service_id:</label> <input type="number" class="form-control" v-model="app_edit.service_id"> </div>
-            						<div class="form-group"> <label>app_state_cd:</label> <input type="number" class="form-control" v-model="app_edit.app_state_cd"> </div>
-            						<div class="form-group"> <label>app_type_cd:</label> <input type="number" class="form-control" v-model="app_edit.app_type_cd"> </div>
-            						<div class="form-group"> <label>enable_flg</label>x <input type="number" class="form-control" v-model="app_edit.enable_flg"> </div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer"> <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button type="submit" class="form-group btn btn-primary">Save changes</button> </div>
-					</form>
-				</div>
-			</div>
-		</div>
-		<!--ここまで編集モーダル-->
-		
 		<!--インフラ情報編集モーダル-->
     	<div v-for="app in apps">
 			<div v-for="infra in app.app_infra" :class="'edit-infra-modal'+ infra.id + ' ' + 'edit-infra-modal'" role="document" >
@@ -201,6 +198,71 @@
 			</div>
 		</div>
 		<!--ここまでインフラ情報編集モーダル-->
+		
+		<el-drawer
+		    title="アプリケーション情報"
+            :visible.sync="appDetail"
+            size="80%">
+                <div>
+                    <ul class="tabs">
+                        <li @click="tabChange('1')" v-bind:class="{'active': isActive === '1'}">基本情報</li>
+                        <li @click="tabChange('2')" v-bind:class="{'active': isActive === '2'}">インフラ情報</li>
+                        <li @click="tabChange('3')" v-bind:class="{'active': isActive === '3'}">システム情報</li>
+                    </ul>
+            
+                    <ul class="contents">
+                        <div v-if="isActive === '1'">
+                            <h3>アプリケーション基本情報</h3>
+        				    <div v-for="detail in details">
+                                <p>サービス名: {{ detail.name }}</p>
+                				<p>タイプ: {{ detail.app_type_cd }}</p>
+                				<p>ステータス: {{detail.app_state_cd }}</p>
+                            </div>
+                        </div>
+                        <div v-if="isActive === '2'">
+                             <div v-for="detail in details">
+                                 <div v-for="infra in detail.app_infra">
+                    				<p>インフラ名: {{ infra.name }}</p>
+                    				<el-button @click="showDomainDetail(infra.domain_id)">ドメイン: {{ infra.domain.name }}</el-button>
+                    				<el-button @click="showServerDetail(infra.srv_id)">サーバー: {{ infra.srv.name }}</el-button>
+                    				<button class="btn btn-success" @click="showEditInfraModal(infra.id)">Edit</button>
+                    			</div>
+                		    </div>
+                        </div>
+                        <div v-if="isActive === '3'">
+                            <h3>システム基本情報</h3>
+                        </div>
+                    </ul>
+                    <el-drawer
+                    title="ドメイン情報"
+                    size="60%"
+                    :append-to-body="true"
+                    :visible.sync="appDomainDetail">
+                        <div v-for="detail in details">
+                             <div v-for="infra in detail.app_infra">
+                				<p>インフラ名: {{ infra.name }}</p>
+                				<p @click="domainShow(infra.domain_id)" class="domain-name">ドメイン: {{ infra.domain.name }}</p>
+                				<p @click="serverShow(infra.srv_id)" class="server-name">サーバー: {{ infra.srv.name }}</p>
+                				<button class="btn btn-success" @click="showEditInfraModal(infra.id)">Edit</button>
+                			</div>
+                		</div>
+                    </el-drawer>
+                    <el-drawer
+                    title="サーバー情報"
+                    size="60%"
+                    :append-to-body="true"
+                    :visible.sync="appServerDetail">
+                    <div v-for="server in servers">
+        				<p>サーバー名: {{ server.name }}</p>
+        				<p>ベンダー: {{server.vendor }}</p>
+        				<p>契約プラン: {{server.contract_plan }}</p>
+        				<p>OS: {{ server.os }}</p>
+        				<p>概要: {{ server.overview }}</p>
+                    </div>
+                    </el-drawer>
+                </div>
+        </el-drawer>
+
     </div>
 </template>
 
@@ -220,8 +282,14 @@
                 isActive: '1',
                 keyword: '',
                 domains:{},
-                servers:{},
                 page: 1,
+                centerDialogVisible: false,
+                appEditModal: false,
+                appDetail: false,
+                innerAppDetail: false,
+                details: [],
+                appDomainDetail:false, 
+                appServerDetail:false
             }
         },
         mounted: function(){
@@ -236,18 +304,35 @@
                 }).then((response) => {
                     this.domains = response.data.domains;
                     this.servers = response.data.servers;
-                    setTimeout(() => {
-                        if (this.page < response.data.apps.data.length) {
-                            this.page += 1
-                            this.apps.push(...response.data.apps.data)
-                            $state.loaded()
-                        } else {
-                            $state.complete()
-                        }
-                    }, 1500)
+                    if (this.page < response.data.apps.data.length) {
+                        this.page += 1
+                        this.apps.push(...response.data.apps.data)
+                        $state.loaded()
+                    } else {
+                        $state.complete()
+                    }
                 }).catch((err) => {
                     $state.complete()
                 })
+            },
+            showAppDetail(id) {
+                var result = this.apps.filter( function( value, index ) {
+                    return id === index +2;
+                })
+                this.details = result
+                this.appDetail = true
+            },
+            showDomainDetail(id) {
+                var result = this.domains.filter( function( value, index ) {
+                    return id === index +2;
+                })
+               this.appDomainDetail = true
+            },
+            showServerDetail(id) {
+                var result = this.servers.filter( function( value, index ) {
+                    return id === index +2;
+                })
+                this.appServerDetail = true
             },
             sort(){
                 this.apps.sort(function(a,b){
@@ -256,14 +341,15 @@
                },
             // 新規アプリ追加
             addApp(){
+                console.log('aaa');
                 const uri = '/api/app_create';
                 this.axios.post(uri, this.app).then((response) => {
                     this.apps.push(response.data.app)
                });
             },
             // アプリ編集
-            editApp(id){
-                const uri = `/api/app_edit/${id}`;
+            appEdit(id){
+                const uri = `/api/app_edit/${this.app.id}`;
                 this.axios.post(uri, this.app_edit).then((response) => {
                     this.apps.splice(this.apps.indexOf(id), 1, response.data.app);
                 });
@@ -278,9 +364,9 @@
             },
             // 編集モーダル表示
             showEditModal(id,e){
-                $('.edit-modal' + id).addClass("active");
-                $('.app-content').addClass("active");
-                e.stopPropagation();
+               this.appEditModal = true
+               this.app.id = id
+               e.stopPropagation();
             },
             // 編集モーダル非表示
             closeEditModal(id,e){
@@ -306,10 +392,10 @@
                  $('.edit-infra-modal' + id).removeClass("active"); 
             },
             // アプリケーション詳細表示
-            detailShow(id) {
-                $('.app-detail' + id).addClass("active");
-                $('.app-content').addClass("active");
-            },
+            // detailShow(id) {
+            //     $('.app-detail' + id).addClass("active");
+            //     $('.app-content').addClass("active");
+            // },
             // 詳細表示
             domainShow(id) {
                 $('.domain-detail' + id).addClass("active");
@@ -338,7 +424,6 @@
                 axios.post('/api/app_search/'+ this.keyword)
                 .then(res => {
                     this.apps = res.data.apps;
-                    console.log(res.data);
                 })
                 .catch(error => {
                     console.log('データの取得に失敗しました。');

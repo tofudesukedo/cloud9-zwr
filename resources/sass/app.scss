@@ -1,24 +1,32 @@
 .index {
+    h1 {
+        margin-top: 30px;
+        font-size: 25px;
+        color: #606266
+    }
     .app-header {
-        padding: 20px 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        margin-top: 20px;
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
-        li {
-            list-style: none;
-            .form-control {
-                vertical-align: bottom;
-                display: inline-flex;
-                width: 50%;
+        justify-content: space-between;
+        padding: 0;
+            li {
+                list-style: none;
+                .form-control {
+                    vertical-align: bottom;
+                    display: inline-flex;
+                    width: 50%;
+                }
             }
-        }
     }
     .app-content {
         position: relative;
         &.active {
         background: #333;
         opacity: 0.1;
+        }
+        th {
+            color: #606266
         }
     }
     .app-details
@@ -117,12 +125,32 @@
 }
 
 .edit-infra-modal{
-        transform: translate(-50%,-50%);
-        top: 50%;
-        left: 50%;
-        position: absolute;
-        display: none;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    display: none;
+    &.active {
+        display: block;
+    }
+}
+.tabs {
+    cursor: pointer;
+    padding: 0;
+    width: 92%;
+    height: 50px;
+    background: #F4F4F4;
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    justify-content: space-between;
+    text-align: center; 
+    word-break: break-all;
+    li {
+        padding: 12px 0 0 0;
+        width: 33%;
         &.active {
-            display: block;
+            background: #fff;
         }
     }
+}
