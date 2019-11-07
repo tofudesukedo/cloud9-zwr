@@ -17,7 +17,7 @@
     			<table class="table table-hover">
     				<thead>
     					<tr>
-    						<th>ID<button class="ml-5 btn btn-small btn-secondary" @click="sort()"">ID順番切り替え</button></th>
+    						<th>ID<button class="ml-5 btn btn-small btn-secondary" @click="sort()">ID順番切り替え</button></th>
     						<th>Name</th>
     						<th>Edit</th>
     						<th>Delete</th>
@@ -30,18 +30,8 @@
         						<td><button class="btn btn-success" data-toggle="modal" @click="showEditModal(app.id, $event)">Edit</button></td>
         						<td><button class="btn btn-danger" @click="deleteApp(app.id, $event)">Delete</button></td>
         					</tr>
+        					<infinite-loading @infinite="infiniteHandler"></infinite-loading>
     				</draggable>
-    				<!--ページネーション-->
-    				<ul class="pagination navigation example">
-                      <li :class="{disabled: current_page <= 1}" class="page-item"><a class="page-link" href="#" @click="change(1)">&laquo;</a></li>
-                      <li :class="{disabled: current_page <= 1}" class="page-item"><a class="page-link" href="#" @click="change(current_page - 1)">&lt;</a></li>
-                      <li v-for="page in pages" :key="page" :class="{active: page === current_page}" class="page-item">
-                        <a @click="change(page)" class="page-link">{{page}}</a>
-                      </li>
-                      <li :class="{disabled: current_page >= last_page}" class="page-item"><a class="page-link" href="#" @click="change(current_page + 1)">&gt;</a></li>
-                      <li :class="{disabled: current_page >= last_page}" class="page-item"><a class="page-link" href="#" @click="change(last_page)">&raquo;</a></li>
-                    </ul>
-                    <!--ページネーション-->
     			</table>
     		</div>
     	</div>
@@ -231,40 +221,39 @@
                 keyword: '',
                 domains:{},
                 servers:{},
-                current_page: 1,
-                last_page: 1,
-                total: 1,
-                from: 0,
-                to: 0,
+                page: 1,
             }
         },
         mounted: function(){
-            this.load(1)
         },
         methods: {
-            
+            infiniteHandler($state) {
+                axios.get('/api/app_index', {
+                    params: {
+                        page: this.page,
+                        per_page: 1
+                    },
+                }).then((response) => {
+                    this.domains = response.data.domains;
+                    this.servers = response.data.servers;
+                    setTimeout(() => {
+                        if (this.page < response.data.apps.data.length) {
+                            this.page += 1
+                            this.apps.push(...response.data.apps.data)
+                            $state.loaded()
+                        } else {
+                            $state.complete()
+                        }
+                    }, 1500)
+                }).catch((err) => {
+                    $state.complete()
+                })
+            },
             sort(){
                 this.apps.sort(function(a,b){
                     return (a < b ? 1 : -1);
                 });
                },
-            // ページネーション
-            load(page) {
-                axios.get('/api/app_index?page=' + page).then((response) => {
-                    this.apps = response.data.apps.data
-                    this.current_page = response.data.apps.current_page
-                    this.last_page = response.data.apps.last_page
-                    this.total = response.data.apps.total
-                    this.from = response.data.apps.from
-                    this.to = response.data.apps.to
-                    this.domains = response.data.domains;
-                    this.servers = response.data.servers;
-                })
-            },
-            change(page) {
-                if (page >= 1 && page <= this.last_page)
-                this.load(page)
-            },
             // 新規アプリ追加
             addApp(){
                 const uri = '/api/app_create';
@@ -356,13 +345,5 @@
                 });
             },
         },
-        computed: {
-            pages() {
-                let start = _.max([this.current_page - 2, 1])
-                let end = _.min([start + 5, this.last_page + 1])
-                start = _.max([end - 5, 1])
-                return _.range(start, end)
-            },
-        }
     }
 </script>

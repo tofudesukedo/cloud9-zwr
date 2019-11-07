@@ -9,6 +9,8 @@ Vue.use(VueAxios, axios);
 
 import HomeComponent from './components/HomeComponent.vue';
 import IndexComponent from './components/IndexComponent.vue'
+import InfiniteLoading from 'vue-infinite-loading'
+Vue.use(InfiniteLoading);
 
 const routes = [
  {
