@@ -80,6 +80,11 @@ class AppController extends Controller {
         $infra->domain_id = $request->domain_id;
         $infra->enable_flg = $request->enable_flg;
         $infra->save();
+        
+        $infra =AppInfra::where('id', $id)
+        ->with('domain')
+        ->with('srv')
+        ->first();
        
         $result = compact('infra');
         return response()->json($result);    

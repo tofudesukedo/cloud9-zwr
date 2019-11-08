@@ -7,10 +7,10 @@
     		<ul class="app-header">
     			<li><el-button type="primary" @click="centerDialogVisible = true">追加</el-button></li>
     			<li>
-    			    <input type="text" class="form-control search-query span3" v-model="keyword" placeholder="Search">
-    			    <button class="ml-3 btn btn-outline-success" v-on:click.prevent="search()">
-                        Search
-                    </button>
+    			    <el-input placeholder="Search" v-model="keyword"></el-input>
+    			</li>
+    			<li>
+    			    <el-button @click.prevent="search()" icon="el-icon-search" circle></el-button>
                 </li>
     		</ul>
     		<div>
@@ -28,8 +28,8 @@
     					 <tr v-for="app in apps" :key="app.id">
     						<td>{{ app.id }}</td>
     						<td>{{ app.name }}</td>
-    						<td><el-button type="success" icon="el-icon-edit" @click="showEditModal(app.id, $event)" circle></el-button></td>
-    						<td><el-button type="danger" icon="el-icon-delete" @click="deleteApp(app.id, $event)" circle></el-button></td>
+    						<td><el-button type="success" icon="el-icon-edit" @click="showEditModal(app.id)" circle></el-button></td>
+    						<td><el-button type="danger" icon="el-icon-delete" @click="deleteApp(app.id)" circle></el-button></td>
     						<td>
     						    <el-button @click="showAppDetail(app.id)">
                                     詳細
@@ -48,34 +48,39 @@
 		    title="アプリケーション情報"
             :visible.sync="appDetail"
             size="80%">
-                <div>
-                    <el-tabs v-model="activeName">
-                        <el-tab-pane label="基本情報" name="first">
-                            <div v-for="detail in details">
-                                <p>サービス名: {{ detail.name }}</p>
-                				<p>タイプ: {{ detail.app_type_cd }}</p>
-                				<p>ステータス: {{detail.app_state_cd }}</p>
-                            </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="インフラ情報" name="second">
-                            <div v-for="detail in details">
-                                <div v-for="infra in detail.app_infra">
-                    				<p>インフラ名: {{ infra.name }}</p>
-                    				<p @click="showDomainDetail(infra.domain_id)" class="domain-name">ドメイン: {{ infra.domain.name }}</p>
-                    				<p @click="showServerDetail(infra.srv_id)" class="server-name">サーバー: {{ infra.srv.name }}</p>
-                    				<el-button type="success" icon="el-icon-edit"  @click="showEditInfraModal(infra.id)" circle></el-button>
-                    			</div>
-                		    </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="システム情報" name="third">....</el-tab-pane>
-                    </el-tabs>
-                    
-                    <!--ドメイン情報詳細モーダル-->
-                    <el-drawer
+            <div>
+                <el-tabs v-model="activeName">
+                    <el-tab-pane label="基本情報" name="first">
+                        <el-card>
+                        <div v-for="detail in details">
+                            <p>サービス名: {{ detail.name }}</p>
+            				<p>タイプ: {{ detail.app_type_cd }}</p>
+            				<p>ステータス: {{detail.app_state_cd }}</p>
+                        </div>
+                        </el-card>
+                    </el-tab-pane>
+                    <el-tab-pane label="インフラ情報" name="second">
+                        <div v-for="detail in details">
+                            <el-card class="box-card">
+                            <div v-for="infra in detail.app_infra">
+                				<p>インフラ名: {{ infra.name }}</p>
+                				<p @click="showDomainDetail(infra.domain_id)" class="domain-name">ドメイン: {{ infra.domain.name }}</p>
+                				<p @click="showServerDetail(infra.srv_id)" class="server-name">サーバー: {{ infra.srv.name }}</p>
+                				<el-button type="success" icon="el-icon-edit"  @click="showEditInfraModal(infra.id)" circle></el-button>
+                			</div>
+                			</el-card>
+            		    </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="システム情報" name="third">....</el-tab-pane>
+                </el-tabs>
+                
+                <!--ドメイン情報詳細モーダル-->
+                <el-drawer
                     title="ドメイン情報"
                     size="60%"
                     :append-to-body="true"
                     :visible.sync="appDomainDetail">
+                    <el-card>
                         <div v-for="domain in domains">
             				<p>ドメイン名: {{ domain.name }}</p>
             				<p>メンバーID: {{ domain.mem_id }}</p>
@@ -86,25 +91,28 @@
             				<p>契約終了日: {{ domain.contract_end_date }}</p>
             				<p>エナブルフラグ: {{ domain.enable_flg }}</p>
             			</div>
-                    </el-drawer>
-                    <!--ここまでドメイン情報詳細モーダル-->
-                    
-                    <!--サーバー情報詳細モーダル-->
-                    <el-drawer
+        			</el-card>
+                </el-drawer>
+                <!--ここまでドメイン情報詳細モーダル-->
+                
+                <!--サーバー情報詳細モーダル-->
+                <el-drawer
                     title="サーバー情報"
                     size="60%"
                     :append-to-body="true"
                     :visible.sync="appServerDetail">
-                    <div v-for="server in servers">
-        				<p>サーバー名: {{ server.name }}</p>
-        				<p>ベンダー: {{server.mem_id }}</p>
-        				<p>契約プラン: {{server.contract_plan }}</p>
-        				<p>OS: {{ server.os }}</p>
-        				<p>概要: {{ server.overview }}</p>
-                    </div>
-                    </el-drawer>
-                    <!--ここまでサーバー情報詳細モーダル-->
-                </div>
+                    <el-card>
+                        <div v-for="server in servers">
+            				<p>サーバー名: {{ server.name }}</p>
+            				<p>ベンダー: {{server.mem_id }}</p>
+            				<p>契約プラン: {{server.contract_plan }}</p>
+            				<p>OS: {{ server.os }}</p>
+            				<p>概要: {{ server.overview }}</p>
+                        </div>
+                    </el-card>
+                </el-drawer>
+                <!--ここまでサーバー情報詳細モーダル-->
+            </div>
         </el-drawer>
         <!--ここまでアプリケーション情報詳細モーダル-->
         
@@ -244,7 +252,7 @@
             // アプリケーション詳細表示
             showAppDetail(id) {
                 var result = this.apps.filter( function( value, index ) {
-                    return id === index +2;
+                    return id === index +1;
                 })
                 this.details = result
                 this.appDetail = true
@@ -252,15 +260,17 @@
             // ドメイン詳細表示
             showDomainDetail(id) {
                 var result = this.domains.filter( function( value, index ) {
-                    return id === index +2;
+                    return id === index +1;
                 })
-               this.appDomainDetail = true
+                this.domains = result
+                this.appDomainDetail = true
             },
             // サーバー詳細表示
             showServerDetail(id) {
                 var result = this.servers.filter( function( value, index ) {
                     return id === index +2;
                 })
+                this.servers = result
                 this.appServerDetail = true
             },
             // ソート機能
@@ -284,26 +294,25 @@
                 });
             },
             // アプリケーション削除
-            deleteApp(id,e){
-                 const uri = `/api/app_delete/${id}`;
-                 this.axios.delete(uri).then(response => {
+            deleteApp(id){
+                const uri = `/api/app_delete/${id}`;
+                this.axios.delete(uri).then(response => {
                      this.apps.splice(this.apps.indexOf(id), 1);
-                 });
-                 e.stopPropagation();
+                });
             },
             // 編集モーダル表示
             showEditModal(id){
                this.appEditModal = true
                this.app.id = id
-               e.stopPropagation();
             },
             // インフラ情報編集
             editInfra() {
                 const uri = `/api/edit_infra/${this.edit_infra.id}`;
                 this.axios.post(uri, this.edit_infra).then((response) => {
-                    // this.apps.map(function(val, i, array){ //データに追加
-                    //     array[i].app_infra.splice(array[i].app_infra.indexOf(id), 1, response.data.infra);
-                    // });
+                    console.log(response.data.infra);
+                    for(const detail of this.details){
+                        detail.app_infra.splice(detail.app_infra.indexOf(this.edit_infra.id), 1, response.data.infra);
+                    }
                 });
             },
             // インフラ情報編集モーダル表示
