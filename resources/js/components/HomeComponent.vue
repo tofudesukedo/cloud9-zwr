@@ -1,13 +1,22 @@
 <template>
-  <div style="text-align: center; margin-top: 300px; font-size: 30px">
-      Hello from ZWR!
+  <div class="container--small">
+        {{ username }}
+        <el-button type="primary" @click="logout">Logout</el-button>
   </div>
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
+export default {
+  methods: {
+    async logout () {
+      await this.$store.dispatch('auth/logout')
+      this.$router.push('/app_index/')
     }
+  },
+  computed: {
+    username () {
+      return this.$store.getters['auth/username']
+    }
+  }
+}
 </script>

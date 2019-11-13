@@ -1,3 +1,4 @@
+
 .el-aside
 { 
     height: 100vh;
@@ -37,4 +38,25 @@ th {
 
 .el-drawer {
     padding: 30px;
+}
+
+.box-card {
+  width: 480px;
+}
+
+.login {
+  position: relative;
+  top: 100px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  margin: auto;
+}
+
+.el-container {
+    &.errors {
+        flex-direction: column !important;
+        margin: 10px;
+    }
+    
 }

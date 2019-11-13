@@ -1,6 +1,6 @@
 <template>
     <div class="index">
-        
+        <div v-if="isLogin">
         <!--メイン-->
     	<div class="app-content">
     	    <h1>アプリケーション一覧</h1>
@@ -192,7 +192,10 @@
             </el-form>
         </el-dialog>
         <!--ここまでインフラ情報編集モーダル-->
-        
+        </div>
+        <div v-else>
+            ログインしてね
+        </div>
     </div>
 </template>
 
@@ -335,5 +338,13 @@
                 });
             },
         },
+        computed: {
+            isLogin () {
+              return this.$store.getters['auth/check']
+            },
+            username () {
+              return this.$store.getters['auth/username']
+            }
+        }
     }
 </script>

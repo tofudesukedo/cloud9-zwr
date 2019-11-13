@@ -18,18 +18,36 @@ import IndexComponent from './components/IndexComponent.vue'
 import InfiniteLoading from 'vue-infinite-loading'
 Vue.use(InfiniteLoading);
 
+import Vuex from 'vuex';
+Vue.use(Vuex);
+import store from './store';
+
+import System from './components/System.vue';
+
+
 const routes = [
  {
-     name: 'home',
-     path: '/',
-     component: HomeComponent
+    name: 'home',
+    path: '/',
+    component: HomeComponent
  },
  {
-     name: 'index',
-     path: '/app_index',
-     component: IndexComponent
+    name: 'index',
+    path: '/app_index',
+    component: IndexComponent
+ },
+ {
+    name: 'system',
+    path: '/500',
+    component: System
  },
 ];
 
 const router = new VueRouter({ mode: 'history', routes: routes});
-const app = new Vue(Vue.util.extend({ router }, App)).$mount('#app');
+
+const createApp = async () => {
+  await store.dispatch('auth/currentUser')
+  const app = new Vue(Vue.util.extend({ router,store }, App)).$mount('#app')
+}
+
+createApp()
