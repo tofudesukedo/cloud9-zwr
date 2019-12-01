@@ -53,17 +53,24 @@ class AppController extends Controller {
         return response()->json($result);    
    }
 
-   public function delete($id){
+   public function delete(Request $request){
         
-        $app = App::find($id);
-        $app->delete();
+        // return response()->json($request);
+        
+        if (!empty($request)) {
+            $apps = App::whereIn('id', $request);
+            $apps->delete();
+        } elseif (!empty($id)) {
+            $app = App::find($id);
+            $app->delete();
+        }
         return response()->json('successfully deleted');
    }
    
-   public function search($app_name){   
+   public function search(Request $request){   
        
-        if (!empty($app_name)) {
-            $apps = App::where('name', 'LIKE', "%$app_name%")
+        if (!empty($request)) {
+            $apps = App::where('name', 'LIKE', "%$request->name%")
                     ->limit(20)
                     ->get();
                     
@@ -72,7 +79,7 @@ class AppController extends Controller {
         }
     }
     
-    public function editInfra($id, Request $request){
+    public function edi1tInfra($id, Request $request){
         
         $infra = AppInfra::find($id);
         $infra->name = $request->name;
